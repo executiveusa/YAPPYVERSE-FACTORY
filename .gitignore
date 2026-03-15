@@ -1,0 +1,32 @@
+# Ignore secrets and large files
+.env
+*.pyc
+__pycache__/
+*.egg-info/
+dist/
+build/
+
+# Temp files from setup
+pip_install.log
+check.txt
+test_out.txt
+setup_results.json
+install_results.json
+verify.txt
+setup_check.py
+test_simple.py
+do_install.py
+download_install.py
+extract_install.py
+verify_masf.py
+
+# Large source archives
+masf.zip
+masf-src/
+masf-src2/
+mf/
+
+# OS files
+Thumbs.db
+.DS_Store
+desktop.ini

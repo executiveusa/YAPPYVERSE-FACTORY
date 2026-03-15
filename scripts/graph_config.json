@@ -1,0 +1,105 @@
+{
+  "graph_name": "yappyverse_character_factory",
+  "version": "1.0.0",
+  "description": "MAS-Factory 10-node computation graph for YAPPYVERSE character generation pipeline",
+  "nodes": [
+    {
+      "id": "scanner",
+      "type": "agent",
+      "role": "Scan source folders for reference images; output file manifest with checksums",
+      "inputs": ["source_folder", "canonical_id"],
+      "outputs": ["file_manifest"]
+    },
+    {
+      "id": "tagger",
+      "type": "agent",
+      "role": "Classify each file (hero ref, profile, accessory, background, video, audio, misc); assign canonical labels",
+      "inputs": ["file_manifest"],
+      "outputs": ["tagged_manifest"]
+    },
+    {
+      "id": "organizer",
+      "type": "agent",
+      "role": "Copy/rename files to canonical paths in assets/{id}/{category}/; write .meta.json sidecars",
+      "inputs": ["tagged_manifest", "canonical_id"],
+      "outputs": ["organized_manifest"]
+    },
+    {
+      "id": "model_gen",
+      "type": "agent",
+      "role": "Generate 3D mesh from hero reference via HuggingFace TripoSR or Replicate; output .obj/.glb",
+      "inputs": ["organized_manifest"],
+      "outputs": ["mesh_path"],
+      "tools": ["huggingface_triposr", "replicate_api"],
+      "env_keys": ["HUGGINGFACE_TOKEN", "REPLICATE_API_KEY"]
+    },
+    {
+      "id": "texture",
+      "type": "agent",
+      "role": "Generate/apply PBR textures using Nano Banana or procedural Blender materials; bake to UV maps",
+      "inputs": ["mesh_path", "organized_manifest"],
+      "outputs": ["textured_mesh_path"],
+      "tools": ["nano_banana", "blender_bake"]
+    },
+    {
+      "id": "rigger",
+      "type": "agent",
+      "role": "Auto-rig mesh using Blender Rigify; configure bone groups for body, face, fingers",
+      "inputs": ["textured_mesh_path"],
+      "outputs": ["rigged_blend_path"],
+      "tools": ["blender_rigify"],
+      "env_keys": ["BLENDER_PATH"]
+    },
+    {
+      "id": "animator",
+      "type": "agent",
+      "role": "Apply idle animation (bobbing), reaction clip (finger-wag), and any character-specific clips",
+      "inputs": ["rigged_blend_path"],
+      "outputs": ["animated_blend_path"],
+      "tools": ["blender_animation"]
+    },
+    {
+      "id": "scene",
+      "type": "agent",
+      "role": "Set up Blender scene with character palette lighting, HDRI, camera angles; render turntable + hero shot",
+      "inputs": ["animated_blend_path", "character_config"],
+      "outputs": ["render_paths"],
+      "tools": ["blender_render"]
+    },
+    {
+      "id": "nft_card",
+      "type": "agent",
+      "role": "Compose NFT card image from hero render + palette + metadata overlay; generate ERC-721 token metadata JSON",
+      "inputs": ["render_paths", "character_config"],
+      "outputs": ["nft_card_path", "token_metadata"],
+      "blockchain": {
+        "chain": "Base",
+        "standard": "ERC-721",
+        "royalty_standard": "ERC-2981",
+        "royalty_bps": 750
+      }
+    },
+    {
+      "id": "qa_switch",
+      "type": "controller",
+      "role": "Validate all outputs exist, check mesh polygon count, verify rig deformation, validate metadata schema; route PASS to deployer or FAIL back to failing node",
+      "inputs": ["nft_card_path", "token_metadata", "render_paths", "animated_blend_path"],
+      "outputs": ["qa_result"],
+      "retry_limit": 2
+    }
+  ],
+  "edges": [
+    {"from": "scanner", "to": "tagger"},
+    {"from": "tagger", "to": "organizer"},
+    {"from": "organizer", "to": "model_gen"},
+    {"from": "model_gen", "to": "texture"},
+    {"from": "texture", "to": "rigger"},
+    {"from": "rigger", "to": "animator"},
+    {"from": "animator", "to": "scene"},
+    {"from": "scene", "to": "nft_card"},
+    {"from": "nft_card", "to": "qa_switch"},
+    {"from": "qa_switch", "to": "model_gen", "condition": "qa_result == 'FAIL_MESH'"},
+    {"from": "qa_switch", "to": "texture", "condition": "qa_result == 'FAIL_TEXTURE'"},
+    {"from": "qa_switch", "to": "rigger", "condition": "qa_result == 'FAIL_RIG'"}
+  ]
+}

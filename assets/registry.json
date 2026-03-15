@@ -1,0 +1,154 @@
+{
+  "version": "1.0.0",
+  "naming_convention": "{canonical_id}_{category}_{variant}_v{NNN}.{ext}",
+  "label_format": "{canonical_id}:{category}:{variant}:v{N}",
+  "categories": ["reference", "mesh", "texture", "rig", "animation", "render", "nft", "audio"],
+  "characters": {
+    "pauli": {
+      "display_name": "Pauli",
+      "canonical_id": "pauli",
+      "status": "in_progress",
+      "source_folder": "E:\\ACTIVE PROJECTS-PIPELINE\\ACTIVE PROJECTS-PIPELINE\\YAPPYVERSE\\IMAGES OF YAPPYVERSE\\YAPPYVERSEI-MAGE FILES MASTER\\PAULI\\PAULI\\PAULI IMAGES",
+      "config_path": "assets/pauli/CHARACTER_CONFIG.json",
+      "asset_count": 0
+    },
+    "the_chief": {
+      "display_name": "The Chief",
+      "canonical_id": "the_chief",
+      "status": "queued",
+      "source_folder": "E:\\ACTIVE PROJECTS-PIPELINE\\ACTIVE PROJECTS-PIPELINE\\YAPPYVERSE\\IMAGES OF YAPPYVERSE\\YAPPYVERSEI-MAGE FILES MASTER\\THE CHIEF"
+    },
+    "uncle_reginald": {
+      "display_name": "Uncle Reginald",
+      "canonical_id": "uncle_reginald",
+      "status": "queued",
+      "source_folder": "E:\\ACTIVE PROJECTS-PIPELINE\\ACTIVE PROJECTS-PIPELINE\\YAPPYVERSE\\IMAGES OF YAPPYVERSE\\YAPPYVERSEI-MAGE FILES MASTER\\UNCLE REGINALD"
+    },
+    "viral_vikki": {
+      "display_name": "Viral Vikki",
+      "canonical_id": "viral_vikki",
+      "status": "queued"
+    },
+    "vuk": {
+      "display_name": "Vuk",
+      "canonical_id": "vuk",
+      "status": "queued",
+      "source_folder": "E:\\ACTIVE PROJECTS-PIPELINE\\ACTIVE PROJECTS-PIPELINE\\YAPPYVERSE\\IMAGES OF YAPPYVERSE\\YAPPYVERSEI-MAGE FILES MASTER\\VUK & WIFE"
+    },
+    "frankenstack": {
+      "display_name": "Frankenstack",
+      "canonical_id": "frankenstack",
+      "status": "queued"
+    },
+    "darya": {
+      "display_name": "Darya the Punisher",
+      "canonical_id": "darya",
+      "status": "queued",
+      "source_folder": "E:\\ACTIVE PROJECTS-PIPELINE\\ACTIVE PROJECTS-PIPELINE\\YAPPYVERSE\\IMAGES OF YAPPYVERSE\\YAPPYVERSEI-MAGE FILES MASTER\\DARYA THE PUNISHER"
+    },
+    "hexona": {
+      "display_name": "Hexona",
+      "canonical_id": "hexona",
+      "status": "queued"
+    },
+    "jezz": {
+      "display_name": "Jezz",
+      "canonical_id": "jezz",
+      "status": "queued",
+      "source_folder": "E:\\ACTIVE PROJECTS-PIPELINE\\ACTIVE PROJECTS-PIPELINE\\YAPPYVERSE\\IMAGES OF YAPPYVERSE\\YAPPYVERSEI-MAGE FILES MASTER\\JEZZ & THE CRYPTO CUTIES"
+    },
+    "mustang_maxx": {
+      "display_name": "Mustang Maxx",
+      "canonical_id": "mustang_maxx",
+      "status": "queued"
+    },
+    "bambu_baggins": {
+      "display_name": "Bambú Baggins",
+      "canonical_id": "bambu_baggins",
+      "status": "queued",
+      "source_folder": "E:\\ACTIVE PROJECTS-PIPELINE\\ACTIVE PROJECTS-PIPELINE\\YAPPYVERSE\\IMAGES OF YAPPYVERSE\\YAPPYVERSEI-MAGE FILES MASTER\\Bambú Baggins"
+    },
+    "vontai_banks": {
+      "display_name": "Vontai Banks",
+      "canonical_id": "vontai_banks",
+      "status": "queued",
+      "source_folder": "E:\\ACTIVE PROJECTS-PIPELINE\\ACTIVE PROJECTS-PIPELINE\\YAPPYVERSE\\IMAGES OF YAPPYVERSE\\YAPPYVERSEI-MAGE FILES MASTER\\VONTAI BANKS"
+    },
+    "zorito": {
+      "display_name": "Zorito",
+      "canonical_id": "zorito",
+      "status": "queued",
+      "source_folder": "E:\\ACTIVE PROJECTS-PIPELINE\\ACTIVE PROJECTS-PIPELINE\\YAPPYVERSE\\IMAGES OF YAPPYVERSE\\YAPPYVERSEI-MAGE FILES MASTER\\ZORITO & Wife"
+    },
+    "cosmos": {
+      "display_name": "Cosmos",
+      "canonical_id": "cosmos",
+      "status": "queued",
+      "source_folder": "E:\\ACTIVE PROJECTS-PIPELINE\\ACTIVE PROJECTS-PIPELINE\\YAPPYVERSE\\IMAGES OF YAPPYVERSE\\YAPPYVERSEI-MAGE FILES MASTER\\COSMOS"
+    },
+    "malecon": {
+      "display_name": "Malecon",
+      "canonical_id": "malecon",
+      "status": "queued",
+      "source_folder": "E:\\ACTIVE PROJECTS-PIPELINE\\ACTIVE PROJECTS-PIPELINE\\YAPPYVERSE\\IMAGES OF YAPPYVERSE\\YAPPYVERSEI-MAGE FILES MASTER\\MALECON & SENIOR RUDY"
+    },
+    "senior_rudy": {
+      "display_name": "Senior Rudy",
+      "canonical_id": "senior_rudy",
+      "status": "queued"
+    },
+    "jorge": {
+      "display_name": "Jorge",
+      "canonical_id": "jorge",
+      "status": "queued",
+      "source_folder": "E:\\ACTIVE PROJECTS-PIPELINE\\ACTIVE PROJECTS-PIPELINE\\YAPPYVERSE\\IMAGES OF YAPPYVERSE\\YAPPYVERSEI-MAGE FILES MASTER\\JORGE & THE MAN WITH THE RED HAT"
+    },
+    "red_hat_man": {
+      "display_name": "The Man in the Red Hat",
+      "canonical_id": "red_hat_man",
+      "status": "queued"
+    },
+    "fredo": {
+      "display_name": "Fredo",
+      "canonical_id": "fredo",
+      "status": "queued",
+      "source_folder": "E:\\ACTIVE PROJECTS-PIPELINE\\ACTIVE PROJECTS-PIPELINE\\YAPPYVERSE\\IMAGES OF YAPPYVERSE\\YAPPYVERSEI-MAGE FILES MASTER\\FREDO-3D COLLECTION"
+    },
+    "la_silueta": {
+      "display_name": "La Silueta",
+      "canonical_id": "la_silueta",
+      "status": "queued",
+      "source_folder": "E:\\ACTIVE PROJECTS-PIPELINE\\ACTIVE PROJECTS-PIPELINE\\YAPPYVERSE\\IMAGES OF YAPPYVERSE\\YAPPYVERSEI-MAGE FILES MASTER\\LA SILUETA"
+    },
+    "louis_p": {
+      "display_name": "Louis P",
+      "canonical_id": "louis_p",
+      "status": "queued",
+      "source_folder": "E:\\ACTIVE PROJECTS-PIPELINE\\ACTIVE PROJECTS-PIPELINE\\YAPPYVERSE\\IMAGES OF YAPPYVERSE\\YAPPYVERSEI-MAGE FILES MASTER\\Louis P"
+    },
+    "poo_racho": {
+      "display_name": "Poo-Racho",
+      "canonical_id": "poo_racho",
+      "status": "queued",
+      "source_folder": "E:\\ACTIVE PROJECTS-PIPELINE\\ACTIVE PROJECTS-PIPELINE\\YAPPYVERSE\\IMAGES OF YAPPYVERSE\\YAPPYVERSEI-MAGE FILES MASTER\\Poo-RACHO"
+    },
+    "wall_e": {
+      "display_name": "Wall-E",
+      "canonical_id": "wall_e",
+      "status": "queued",
+      "source_folder": "E:\\ACTIVE PROJECTS-PIPELINE\\ACTIVE PROJECTS-PIPELINE\\YAPPYVERSE\\IMAGES OF YAPPYVERSE\\YAPPYVERSEI-MAGE FILES MASTER\\WALL-E"
+    },
+    "voa": {
+      "display_name": "VOA",
+      "canonical_id": "voa",
+      "status": "queued",
+      "source_folder": "E:\\ACTIVE PROJECTS-PIPELINE\\ACTIVE PROJECTS-PIPELINE\\YAPPYVERSE\\IMAGES OF YAPPYVERSE\\YAPPYVERSEI-MAGE FILES MASTER\\VOA"
+    },
+    "the_key": {
+      "display_name": "The Key",
+      "canonical_id": "the_key",
+      "status": "queued",
+      "source_folder": "E:\\ACTIVE PROJECTS-PIPELINE\\ACTIVE PROJECTS-PIPELINE\\YAPPYVERSE\\IMAGES OF YAPPYVERSE\\YAPPYVERSEI-MAGE FILES MASTER\\THE KEY"
+    }
+  }
+}

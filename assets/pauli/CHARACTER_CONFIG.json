@@ -1,0 +1,161 @@
+{
+  "schema_version": "1.0.0",
+  "identity": {
+    "canonical_id": "pauli",
+    "display_name": "Pauli",
+    "full_name": "Pauli",
+    "tagline": "The OG of the YAPPYVERSE",
+    "role": "protagonist",
+    "episode_debut": 1,
+    "voice_id": "pauli_elevenlabs",
+    "soul_reference": "The boss, the connector, the one who started it all"
+  },
+  "palette": {
+    "background": {"r": 20, "g": 15, "b": 30, "hex": "#140F1E", "name": "deep purple-black"},
+    "foreground": {"r": 230, "g": 220, "b": 255, "hex": "#E6DCFF", "name": "lavender white"},
+    "accent": {"r": 255, "g": 100, "b": 50, "hex": "#FF6432", "name": "fire orange"},
+    "secondary_accent": {"r": 200, "g": 170, "b": 50, "hex": "#C8AA32", "name": "gold chain"}
+  },
+  "model": {
+    "style": "stylized_cartoon",
+    "target_polygon_count": 25000,
+    "mesh_pieces": [
+      {"name": "body", "description": "Main torso and limbs"},
+      {"name": "head", "description": "Head with facial features"},
+      {"name": "hat", "description": "Signature fedora/wide-brim hat"},
+      {"name": "jacket", "description": "Open jacket/blazer"},
+      {"name": "cigar", "description": "Unlit cigar accessory"},
+      {"name": "chain", "description": "Gold chain necklace"},
+      {"name": "cane", "description": "Walking cane with ornate handle"}
+    ],
+    "generation": {
+      "method": "triposr",
+      "fallback": "replicate_instant_mesh",
+      "hero_reference": "pauli_reference_hero_v001.png",
+      "source_image": "Pauli-full image.PNG"
+    }
+  },
+  "wardrobe": {
+    "default_outfit": {
+      "name": "boss_suit",
+      "items": ["fedora", "open_blazer", "dress_shirt", "slacks", "dress_shoes"],
+      "accessories": ["gold_chain", "cigar", "cane"]
+    },
+    "alternate_outfits": [
+      {
+        "name": "casual_pauli",
+        "items": ["polo_shirt", "linen_pants", "loafers"],
+        "accessories": ["gold_chain", "cigar"]
+      }
+    ]
+  },
+  "rig": {
+    "type": "rigify",
+    "bone_groups": ["body", "face", "fingers_L", "fingers_R"],
+    "custom_bones": [
+      {"name": "hat_jiggle", "parent": "head", "type": "spring"},
+      {"name": "chain_dangle", "parent": "spine.003", "type": "spring"},
+      {"name": "cigar_hold", "parent": "hand.R", "type": "child_of"}
+    ]
+  },
+  "animations": {
+    "idle": {
+      "name": "pauli_idle_bobbing",
+      "type": "loop",
+      "frames": 120,
+      "fps": 30,
+      "description": "Subtle weight-shift bobbing, cigar hand slight movement"
+    },
+    "reaction": {
+      "name": "pauli_finger_wag",
+      "type": "oneshot",
+      "frames": 60,
+      "fps": 30,
+      "description": "Finger wag with slight head tilt, knowing smirk"
+    },
+    "entrance": {
+      "name": "pauli_entrance",
+      "type": "oneshot",
+      "frames": 90,
+      "fps": 30,
+      "description": "Walk in leaning on cane, tip hat, flash gold chain"
+    }
+  },
+  "render": {
+    "turntable": {
+      "frames": 120,
+      "fps": 30,
+      "resolution": [1920, 1080],
+      "camera_distance": 3.5,
+      "hdri": "studio_warm"
+    },
+    "hero_shot": {
+      "resolution": [2048, 2048],
+      "camera_angle": "three_quarter_low",
+      "lighting": "dramatic_rim"
+    },
+    "thumbnail": {
+      "resolution": [512, 512],
+      "background": "transparent"
+    }
+  },
+  "nft": {
+    "card": {
+      "resolution": [1500, 2100],
+      "template": "yappyverse_standard",
+      "border_color": "#FF6432",
+      "rarity": "legendary",
+      "edition_size": 1
+    },
+    "metadata": {
+      "name": "Pauli - The OG",
+      "description": "The boss, the connector, the one who started it all. Pauli is the beating heart of the YAPPYVERSE.",
+      "external_url": "https://yappyverse.com/characters/pauli",
+      "attributes": [
+        {"trait_type": "Character", "value": "Pauli"},
+        {"trait_type": "Role", "value": "Protagonist"},
+        {"trait_type": "Rarity", "value": "Legendary"},
+        {"trait_type": "Collection", "value": "YAPPYVERSE Genesis"},
+        {"trait_type": "Episode Debut", "display_type": "number", "value": 1},
+        {"trait_type": "Palette", "value": "Fire Orange & Deep Purple"}
+      ]
+    },
+    "blockchain": {
+      "chain": "Base",
+      "standard": "ERC-721",
+      "royalty_standard": "ERC-2981",
+      "royalty_bps": 750,
+      "royalty_receiver": "deployer"
+    }
+  },
+  "audio": {
+    "voice_provider": "elevenlabs",
+    "voice_model": "eleven_multilingual_v2",
+    "voice_settings": {
+      "stability": 0.5,
+      "similarity_boost": 0.75,
+      "style": 0.4
+    },
+    "catchphrases": [
+      "You know how we do it.",
+      "That's the YAPPYVERSE way.",
+      "Everybody eats."
+    ]
+  },
+  "source_assets": {
+    "hero_image": "E:\\ACTIVE PROJECTS-PIPELINE\\ACTIVE PROJECTS-PIPELINE\\YAPPYVERSE\\IMAGES OF YAPPYVERSE\\YAPPYVERSEI-MAGE FILES MASTER\\PAULI\\PAULI\\PAULI IMAGES\\Pauli-full image.PNG",
+    "source_folder": "E:\\ACTIVE PROJECTS-PIPELINE\\ACTIVE PROJECTS-PIPELINE\\YAPPYVERSE\\IMAGES OF YAPPYVERSE\\YAPPYVERSEI-MAGE FILES MASTER\\PAULI\\PAULI\\PAULI IMAGES",
+    "known_files": [
+      "Pauli-full image.PNG",
+      "Pauli.png",
+      "Pauli Mugshot.png",
+      "Pauli-profile-350x180.png",
+      "PAULI EFFECT FUNNEL# 1.png",
+      "paulicoin.png",
+      "PAULIS PLANTS.png",
+      "Bambu character.png",
+      "cosmos.png",
+      "PAULI MORPH VIDEO.mp4"
+    ]
+  }
+}
