@@ -1,0 +1,6 @@
+init_result=False
+lock=True
+git_objects_MB=73.2
+commit_msg_exists=False
+branches=[]
+packed_refs=False

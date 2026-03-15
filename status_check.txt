@@ -1,0 +1,7 @@
+init_result_exists=False
+index_lock_exists=True
+git_exists=True
+git_log_rc=128
+git_log=
+fatal: your current branch 'master' does not have any commits yet
+git_remote=
