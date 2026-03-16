@@ -81,11 +81,22 @@ jobs:
           with open("assets/pauli/CHARACTER_CONFIG.json") as f:
               cfg = json.load(f)
 
-          required_keys = ["identity", "palette", "model", "nft_card", "blockchain"]
+          # Check top-level keys that must exist in every CHARACTER_CONFIG
+          required_keys = ["identity", "palette", "model", "nft"]
           missing = [k for k in required_keys if k not in cfg]
           if missing:
               print("CHARACTER_CONFIG missing keys:", missing)
+              print("  Present keys:", list(cfg.keys()))
               sys.exit(1)
+
+          # Check nft sub-keys
+          nft = cfg["nft"]
+          required_nft_keys = ["card", "metadata", "blockchain"]
+          missing_nft = [k for k in required_nft_keys if k not in nft]
+          if missing_nft:
+              print("nft block missing sub-keys:", missing_nft)
+              sys.exit(1)
+
           print("CHARACTER_CONFIG schema OK:", list(cfg.keys()))
           EOF
 
