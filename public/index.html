@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>YAPPYVERSE Factory</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+      background: #0e0b16;
+      color: #e6e0f8;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+    .container { max-width: 760px; width: 100%; }
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: #ff6432;
+      margin-bottom: 0.5rem;
+    }
+    .tagline {
+      font-size: 1.1rem;
+      color: #a89ec9;
+      margin-bottom: 3rem;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 3rem;
+    }
+    .card {
+      background: #1a1428;
+      border: 1px solid #2d2545;
+      border-radius: 8px;
+      padding: 1.25rem;
+    }
+    .card-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #6b5f8a;
+      margin-bottom: 0.4rem;
+    }
+    .card-value {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #e6e0f8;
+    }
+    .card-value.accent { color: #ff6432; }
+    .pipeline {
+      background: #1a1428;
+      border: 1px solid #2d2545;
+      border-radius: 8px;
+      padding: 1.5rem;
+    }
+    .pipeline h2 {
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #6b5f8a;
+      margin-bottom: 1rem;
+    }
+    .stage-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .stage {
+      background: #221c35;
+      border: 1px solid #3a2f5a;
+      border-radius: 4px;
+      padding: 0.3rem 0.75rem;
+      font-size: 0.85rem;
+      color: #c4b8e8;
+    }
+    .stage::before { content: "›  "; color: #ff6432; }
+    footer {
+      margin-top: 3rem;
+      font-size: 0.75rem;
+      color: #4a3f68;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>YAPPYVERSE Factory</h1>
+    <p class="tagline">MAS-Factory 10-node character generation pipeline</p>
+
+    <div class="grid">
+      <div class="card">
+        <div class="card-label">Characters</div>
+        <div class="card-value accent">31</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Episodes</div>
+        <div class="card-value">52</div>
+      </div>
+      <div class="card">
+        <div class="card-label">First Character</div>
+        <div class="card-value" style="font-size:1.1rem;padding-top:0.4rem;">Pauli</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Blockchain</div>
+        <div class="card-value" style="font-size:1.1rem;padding-top:0.4rem;">Base</div>
+      </div>
+    </div>
+
+    <div class="pipeline">
+      <h2>Pipeline Stages</h2>
+      <div class="stage-list">
+        <span class="stage">scanner</span>
+        <span class="stage">tagger</span>
+        <span class="stage">organizer</span>
+        <span class="stage">model_gen</span>
+        <span class="stage">texture</span>
+        <span class="stage">rigger</span>
+        <span class="stage">animator</span>
+        <span class="stage">scene</span>
+        <span class="stage">nft_card</span>
+        <span class="stage">qa_switch</span>
+      </div>
+    </div>
+
+    <footer>YAPPYVERSE &copy; 2026 &mdash; executiveusa/YAPPYVERSE-FACTORY</footer>
+  </div>
+</body>
+</html>

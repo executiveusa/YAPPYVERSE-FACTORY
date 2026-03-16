@@ -1,0 +1,154 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    name: Validate Scripts & Configs
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.13
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Syntax-check all Python scripts
+        run: |
+          python -m py_compile scripts/pipeline.py
+          python -m py_compile scripts/scan_assets.py
+          python -m py_compile scripts/wire_env.py
+          python -m py_compile scripts/auto_rig.py
+          echo "All Python scripts passed syntax check"
+
+      - name: Validate JSON configs
+        run: |
+          python - <<'EOF'
+          import json, os, sys
+          errors = []
+          for root, dirs, files in os.walk("."):
+              dirs[:] = [d for d in dirs if d not in [".git", "node_modules", "masf-src2"]]
+              for f in files:
+                  if f.endswith(".json"):
+                      path = os.path.join(root, f)
+                      try:
+                          with open(path) as fh:
+                              json.load(fh)
+                      except Exception as e:
+                          errors.append(f"{path}: {e}")
+          if errors:
+              for e in errors:
+                  print("ERROR:", e)
+              sys.exit(1)
+          print(f"All JSON files valid")
+          EOF
+
+      - name: Check required files exist
+        run: |
+          python - <<'EOF'
+          import os, sys
+          required = [
+              "assets/registry.json",
+              "assets/pauli/CHARACTER_CONFIG.json",
+              "assets/pauli/manifest.json",
+              "scripts/pipeline.py",
+              "scripts/auto_rig.py",
+              "scripts/scan_assets.py",
+              "scripts/graph_config.json",
+              ".env.template",
+              ".gitignore",
+              "README.md",
+          ]
+          missing = [p for p in required if not os.path.exists(p)]
+          if missing:
+              for m in missing:
+                  print("MISSING:", m)
+              sys.exit(1)
+          print(f"All {len(required)} required files present")
+          EOF
+
+      - name: Validate CHARACTER_CONFIG schema
+        run: |
+          python - <<'EOF'
+          import json, sys
+
+          with open("assets/pauli/CHARACTER_CONFIG.json") as f:
+              cfg = json.load(f)
+
+          # Check top-level keys that must exist in every CHARACTER_CONFIG
+          required_keys = ["identity", "palette", "model", "nft"]
+          missing = [k for k in required_keys if k not in cfg]
+          if missing:
+              print("CHARACTER_CONFIG missing keys:", missing)
+              print("  Present keys:", list(cfg.keys()))
+              sys.exit(1)
+
+          # Check nft sub-keys
+          nft = cfg["nft"]
+          required_nft_keys = ["card", "metadata", "blockchain"]
+          missing_nft = [k for k in required_nft_keys if k not in nft]
+          if missing_nft:
+              print("nft block missing sub-keys:", missing_nft)
+              sys.exit(1)
+
+          print("CHARACTER_CONFIG schema OK:", list(cfg.keys()))
+          EOF
+
+      - name: Validate registry covers all char dirs
+        run: |
+          python - <<'EOF'
+          import json, os, sys
+
+          with open("assets/registry.json") as f:
+              reg = json.load(f)
+
+          reg_chars = set(reg["characters"].keys())
+          disk_chars = {d for d in os.listdir("assets")
+                        if os.path.isdir(os.path.join("assets", d))}
+          missing_dirs = reg_chars - disk_chars
+          if missing_dirs:
+              print("Registry chars missing on disk:", missing_dirs)
+              sys.exit(1)
+          print(f"Registry OK: {len(reg_chars)} characters, all dirs present")
+          EOF
+
+  deploy-preview:
+    name: Deploy Preview (Vercel)
+    runs-on: ubuntu-latest
+    needs: validate
+    if: github.event_name == 'pull_request' && vars.VERCEL_ENABLED == 'true'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Vercel CLI
+        run: npm install -g vercel@latest
+
+      - name: Deploy Preview to Vercel
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+        run: |
+          vercel deploy --token=$VERCEL_TOKEN --yes 2>&1 | tee /tmp/vercel_out.txt
+          DEPLOY_URL=$(grep -Eo 'https://[a-zA-Z0-9._/-]+vercel\.app' /tmp/vercel_out.txt | head -1)
+          echo "Preview URL: $DEPLOY_URL"
+          echo "DEPLOY_URL=$DEPLOY_URL" >> $GITHUB_ENV
+
+      - name: Comment preview URL on PR
+        if: env.DEPLOY_URL != ''
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `## Vercel Preview\n\n[${process.env.DEPLOY_URL}](${process.env.DEPLOY_URL})`
+            })
