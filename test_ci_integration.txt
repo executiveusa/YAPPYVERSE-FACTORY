@@ -1,0 +1,2 @@
+Test file to verify autonomous CI agent integration
+This file tests that the CLAUDE.md, jcodemunch-mcp, Ralphy, and e2e-test skill integrations are working.
