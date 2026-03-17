@@ -1,0 +1,29 @@
+project:
+  name: "YAPPYVERSE-FACTORY"
+  language: "Python"
+  framework: "Blender / Static HTML"
+
+commands:
+  test: "python -S scripts/pipeline.py --dry-run"
+  build: "echo 'Vercel builds from public/ on push to main'"
+
+rules:
+  - "always use 'python -S' to avoid corrupt .pth file from E:\\ACTIVE PROJECTS-PIPELINE"
+  - "write large outputs to C:\\Users\\execu\\*.txt then read with read_file"
+  - "never modify src/assets/pauli/** — those are source-of-truth character assets"
+  - "never modify *.lock files"
+  - "follow OWASP Top 10 — sanitize all inputs, no hardcoded secrets, use env vars"
+  - "keep changes small and focused — one logical change per commit"
+  - "use jcodemunch-mcp for code lookup before reading files directly"
+
+boundaries:
+  never_touch:
+    - "src/assets/pauli/**"
+    - "*.lock"
+    - ".ralphy/progress.txt"
+    - ".ralphy-worktrees/**"
+    - ".ralphy-sandboxes/**"
+
+notifications:
+  # Uncomment and set your Discord webhook to get notified on task completion:
+  # discord_webhook: "https://discord.com/api/webhooks/..."

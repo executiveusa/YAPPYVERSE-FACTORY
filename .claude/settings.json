@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "jcodemunch": {
+      "command": "C:\\Users\\execu\\AppData\\Local\\Programs\\Python\\Python313\\Scripts\\jcodemunch-mcp.exe",
+      "args": [],
+      "env": {
+        "GITHUB_TOKEN": "${GH_PAT}",
+        "ANTHROPIC_API_KEY": "${ANTHROPIC_API_KEY}"
+      }
+    }
+  }
+}
