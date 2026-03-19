@@ -1,3 +1,5 @@
+> **MANDATORY:** Read `EMERALD_TABLETS.md` at repo root FIRST before any action this session. It is the highest-authority constitutional document. No commits, edits, deploys, or agent dispatch until it has been fully read.
+
 # YAPPYVERSE-FACTORY — Claude Code Instructions
 
 ## 1. Code Lookup: Use jcodemunch-mcp FIRST

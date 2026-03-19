@@ -8,6 +8,7 @@ commands:
   build: "echo 'Vercel builds from public/ on push to main'"
 
 rules:
+  - "read EMERALD_TABLETS.md at repo root FIRST — highest authority document, supersedes everything"
   - "always use 'python -S' to avoid corrupt .pth file from E:\\ACTIVE PROJECTS-PIPELINE"
   - "write large outputs to C:\\Users\\execu\\*.txt then read with read_file"
   - "never modify src/assets/pauli/** — those are source-of-truth character assets"
