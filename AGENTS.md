@@ -219,6 +219,43 @@ agent-browser open <url>
 7. **Circuit breaker:** Same failure 3× → escalate, do NOT retry same approach.
 8. **Irreversible actions:** Always halt and confirm with user before proceeding.
 
+
+---
+
+## OPEN BRAIN
+
+| Field | Value |
+|-------|-------|
+| **Source** | `tools/open_brain.py` + `db/second_brain_schema.sql` |
+| **Role** | Persistent AI memory — semantic search, CRUD, tagging, linking |
+| **Database** | `second_brain` on VPS `31.220.58.212` (Supabase self-hosted) |
+| **EMERALD_TABLETS** | Part II (Persistence Layer) |
+| **Docs** | `OPEN_BRAIN.md` |
+
+**Capabilities:**
+- `brain.save_memory(title, content, ...)` — persist insights, code, tasks, conversations
+- `brain.search(query)` — ranked full-text search (BM25-style with tsvector weights)
+- `brain.search_by_vector(embedding, min_similarity)` — cosine similarity (384-dim HNSW)
+- `brain.tag_memory(id, tag)` / `brain.get_tags(id)` — flat tag vocabulary
+- `brain.link_memories(a, b, relationship)` — directed knowledge graph edges
+- `brain.start_conversation(title)` / `brain.add_message(conv_id, role, content)` — session logging
+- `brain.set_preference(key, value)` / `brain.get_preference(key)` — agent settings
+- `brain.create_collection(name)` / `brain.add_to_collection(coll_id, mem_id)` — curated sets
+- `brain.stats()` — quick table counts
+
+**Invocation:**
+```python
+from tools.open_brain import OpenBrain
+brain = OpenBrain()  # env vars: SUPABASE_SERVICE_ROLE_KEY, DATABASE_URL
+```
+
+**Connection method:** Supabase pg meta `/pg/query` API — no direct PostgreSQL port required.
+Credentials in `.env` (see `.env.template`). Schema in `db/second_brain_schema.sql`.
+
+**Constraints:** Use service role key. Never expose credentials in commits.
+Schema is idempotent — re-run `db/second_brain_schema.sql` to restore after wipe.
+
+
 ---
 
 *AGENTS.md v1.0 | YAPPYVERSE-FACTORY | Agent Zero authority | Kupuri Media™*
