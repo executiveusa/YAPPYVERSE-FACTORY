@@ -31,8 +31,13 @@ function Get-BeadByTitle([string]$Title) {
     return @($items) | Where-Object { $_.title -eq $Title } | Select-Object -First 1
 }
 
-function New-Bead([string]$Title, [int]$Priority = 0) {
-    $obj = bd create $Title -p $Priority --json | ConvertFrom-Json
+function New-Bead([string]$Title, [int]$Priority = 0, [string]$Parent = "") {
+    if ($Parent) {
+        $obj = bd create $Title -p $Priority --parent $Parent --json | ConvertFrom-Json
+    }
+    else {
+        $obj = bd create $Title -p $Priority -t epic --json | ConvertFrom-Json
+    }
     if ($obj -is [System.Array]) { return $obj[0] }
     return $obj
 }
@@ -43,31 +48,19 @@ if (-not $North) { $North = New-Bead $NorthTitle 0 }
 $NorthId = $North.id
 
 $Milestone = Get-BeadByTitle $MilestoneTitle
-if (-not $Milestone) { $Milestone = New-Bead $MilestoneTitle 0 }
+if (-not $Milestone) { $Milestone = New-Bead $MilestoneTitle 0 $NorthId }
 $MilestoneId = $Milestone.id
 
 bd update $NorthId --description "MODE: operating-system transformation. OUTCOME: owner directs outcomes instead of routing tasks. TARGET: autonomous, sovereign Yappyverse agent network. CONSTRAINTS: Beads mandatory; evidence before claims; cost governed; human gates for publishing/irreversible/high-consequence actions. PROOF: repeated end-to-end verified commercial or mission outcomes without owner task routing. COMMERCIAL VALUE: operating leverage, reusable IP, client delivery, revenue."
 
 bd update $MilestoneId --description "MODE: production acceptance test. OUTCOME: prepare ASC3ND Wednesday 'Why We Started' Reel end-to-end without owner routing. TARGET: review-ready final MP4 + story/timestamp/cost/QA receipts. CONSTRAINTS: real footage/voice only; no publish before approval; Opus costs tracked; builders cannot self-approve. PROOF: final review MP4, independent taste + truth/privacy verdict, Opus credit delta, caption/post proposal. COMMERCIAL VALUE: proves Yappyverse can autonomously fulfill repeatable client media work."
 
-$MilestoneDetail = bd show $MilestoneId --json | ConvertFrom-Json
-if ($MilestoneDetail -is [System.Array]) { $MilestoneDetail = $MilestoneDetail[0] }
-$DependencyIds = @()
-foreach ($dep in @($MilestoneDetail.dependencies)) {
-    if ($dep -is [string]) {
-        $DependencyIds += $dep
-        continue
-    }
-    foreach ($name in @("id", "depends_on_id", "dependency_id", "parent_id")) {
-        if ($dep.PSObject.Properties.Name -contains $name -and $dep.$name) {
-            $DependencyIds += [string]$dep.$name
-        }
-    }
-}
-
-if ($DependencyIds -notcontains $NorthId) {
-    bd dep add $MilestoneId $NorthId
-}
+# Reconcile relation type. Earlier bootstrap logic used the default `blocks`
+# dependency, which would keep the milestone off `bd ready` while the North Star
+# remains open. Parent-child preserves hierarchy without turning the governing
+# outcome into a sequential prerequisite.
+try { bd dep remove $MilestoneId $NorthId | Out-Null } catch {}
+bd dep add $MilestoneId $NorthId --type parent-child
 
 Write-Host "[beads] North Star: $NorthId"
 Write-Host "[beads] First milestone: $MilestoneId"
