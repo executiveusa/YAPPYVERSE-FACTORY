@@ -6,9 +6,11 @@ Graph-based multi-agent character factory built on MAS-Factory (Vibe Graphing).
 
 Yappyverse exists so the owner can **direct outcomes instead of managing tasks** while an owned network of agents turns ideas, client needs, and intellectual property into verified media, software, campaigns, and revenue.
 
-See:
+Governance sources:
 
-- `docs/NORTH_STAR.md` — governing goal and definition of success
+- `EMERALD_TABLETS.md` — original constitutional operating system
+- `EMERALD_TABLETS_AMENDMENT_01.md` — August 2026 North Star / Digital Cofounder / mandatory Beads amendment; later owner directive controls where provisions conflict
+- `docs/NORTH_STAR.md` — governing goal and measurable definition of success
 - `docs/BEADS_POLICY.md` — mandatory work-tracking policy
 
 ## Structure
