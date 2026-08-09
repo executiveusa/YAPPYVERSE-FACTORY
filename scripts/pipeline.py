@@ -5,8 +5,8 @@ Orchestrates the full 10-node MAS-Factory graph for one character:
   animator → scene → nft_card → qa_switch
 
 Usage:
-  python pipeline.py --character pauli [--stage all|scan|model|rig|nft]
-  python pipeline.py --batch               # process all queued characters
+  python pipeline.py --bead-id <id> --character pauli [--stage all|scan|model|rig|nft]
+  python pipeline.py --bead-id <id> --batch               # process all queued characters
 """
 import argparse
 import json
@@ -16,6 +16,8 @@ import subprocess
 import sys
 import time
 from pathlib import Path
+
+from beads_guard import require_active_bead
 
 FACTORY_ROOT = Path(r"E:\YAPPYVERSE-FACTORY")
 ASSETS_DIR = FACTORY_ROOT / "assets"
@@ -376,7 +378,10 @@ def stage_qa(character_id: str) -> dict:
 # Main pipeline runner
 # ─────────────────────────────────────────────
 def run_character(character_id: str, stage: str = "all"):
-    """Run the full (or partial) pipeline for one character."""
+    """Run the full (or partial) pipeline for one character under an active Bead."""
+    bead_id = require_active_bead()
+    print(f"[beads] execution authorized by {bead_id}")
+
     print(f"\n{'='*60}")
     print(f"YAPPYVERSE FACTORY — Character: {character_id.upper()}")
     print(f"Stage: {stage}")
@@ -434,7 +439,10 @@ def run_character(character_id: str, stage: str = "all"):
 
 
 def run_batch():
-    """Run pipeline for all queued characters."""
+    """Run pipeline for all queued characters under an active Bead."""
+    bead_id = require_active_bead()
+    print(f"[beads] batch execution authorized by {bead_id}")
+
     reg = load_registry()
     queued = [cid for cid, v in reg["characters"].items() if v.get("status") == "queued"]
     print(f"Batch mode: {len(queued)} queued characters: {queued}")
@@ -447,18 +455,21 @@ def run_batch():
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="YAPPYVERSE Character Factory Pipeline")
-    parser.add_argument("--character", help="Character canonical ID (e.g. pauli)")
+    parser.add_argument("--bead-id", default=os.environ.get("BEAD_ID"),
+                        help="Claimed active Beads work-item ID")
+    target = parser.add_mutually_exclusive_group(required=True)
+    target.add_argument("--character", help="Character canonical ID (e.g. pauli)")
+    target.add_argument("--batch", action="store_true",
+                        help="Run all queued characters")
     parser.add_argument("--stage", default="all",
                         choices=["all", "scan", "model", "rig", "nft", "qa"],
                         help="Pipeline stage to run (default: all)")
-    parser.add_argument("--batch", action="store_true",
-                        help="Run all queued characters")
     args = parser.parse_args()
+
+    if args.bead_id:
+        os.environ["BEAD_ID"] = args.bead_id
 
     if args.batch:
         run_batch()
-    elif args.character:
-        run_character(args.character, stage=args.stage)
     else:
-        parser.print_help()
-        sys.exit(1)
+        run_character(args.character, stage=args.stage)

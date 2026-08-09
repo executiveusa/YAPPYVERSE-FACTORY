@@ -19,13 +19,66 @@ jobs:
         with:
           python-version: "3.13"
 
-      - name: Syntax-check all Python scripts
+      - name: Syntax-check Python and bootstrap scripts
         run: |
           python -m py_compile scripts/pipeline.py
           python -m py_compile scripts/scan_assets.py
           python -m py_compile scripts/wire_env.py
           python -m py_compile scripts/auto_rig.py
-          echo "All Python scripts passed syntax check"
+          python -m py_compile scripts/beads_guard.py
+          python -m py_compile scripts/run_pipeline_with_bead.py
+          bash -n scripts/bootstrap_beads.sh
+          pwsh -NoProfile -Command '$errors=$null; [System.Management.Automation.Language.Parser]::ParseFile("scripts/bootstrap_beads.ps1", [ref]$null, [ref]$errors) | Out-Null; if ($errors.Count -gt 0) { $errors | ForEach-Object { Write-Error $_ }; exit 1 }'
+          echo "Python, Bash, and PowerShell syntax checks passed"
+
+      - name: Test mandatory Beads enforcement
+        run: |
+          python -m unittest -v tests/test_beads_guard.py
+          set +e
+          python scripts/run_pipeline_with_bead.py --bead-id bd-test --batch --character pauli >/tmp/target_conflict.out 2>&1
+          rc=$?
+          set -e
+          if [ "$rc" -eq 0 ]; then
+            cat /tmp/target_conflict.out
+            echo "ERROR: conflicting --batch and --character targets were accepted"
+            exit 1
+          fi
+          grep -qi "not allowed with argument" /tmp/target_conflict.out || {
+            cat /tmp/target_conflict.out
+            echo "ERROR: target conflict did not fail at argparse boundary"
+            exit 1
+          }
+          echo "Beads enforcement tests passed"
+
+      - name: Validate Beads governance contract
+        run: |
+          python - <<'EOF'
+          from pathlib import Path
+          required = [
+              Path("EMERALD_TABLETS_AMENDMENT_01.md"),
+              Path("docs/NORTH_STAR.md"),
+              Path("docs/BEADS_POLICY.md"),
+              Path("scripts/beads_guard.py"),
+              Path("scripts/run_pipeline_with_bead.py"),
+              Path("scripts/bootstrap_beads.sh"),
+              Path("scripts/bootstrap_beads.ps1"),
+              Path("tests/test_beads_guard.py"),
+          ]
+          missing = [str(p) for p in required if not p.exists()]
+          if missing:
+              raise SystemExit("Missing Beads governance files: " + ", ".join(missing))
+
+          policy = Path("docs/BEADS_POLICY.md").read_text(encoding="utf-8")
+          north = Path("docs/NORTH_STAR.md").read_text(encoding="utf-8")
+          amendment = Path("EMERALD_TABLETS_AMENDMENT_01.md").read_text(encoding="utf-8")
+          if "No substantive Yappyverse work exists unless it has a Bead" not in policy:
+              raise SystemExit("Beads mandatory policy text missing")
+          if "direct outcomes instead of managing tasks" not in north:
+              raise SystemExit("North Star contract missing")
+          if "Beads is mandatory" not in amendment:
+              raise SystemExit("Constitutional Beads amendment missing")
+          print("Beads governance contract present")
+          EOF
 
       - name: Validate JSON configs
         run: |
@@ -46,7 +99,7 @@ jobs:
               for e in errors:
                   print("ERROR:", e)
               sys.exit(1)
-          print(f"All JSON files valid")
+          print("All JSON files valid")
           EOF
 
       - name: Check required files exist
@@ -64,6 +117,9 @@ jobs:
               ".env.template",
               ".gitignore",
               "README.md",
+              "EMERALD_TABLETS_AMENDMENT_01.md",
+              "docs/NORTH_STAR.md",
+              "docs/BEADS_POLICY.md",
           ]
           missing = [p for p in required if not os.path.exists(p)]
           if missing:
@@ -81,7 +137,6 @@ jobs:
           with open("assets/pauli/CHARACTER_CONFIG.json") as f:
               cfg = json.load(f)
 
-          # Check top-level keys that must exist in every CHARACTER_CONFIG
           required_keys = ["identity", "palette", "model", "nft"]
           missing = [k for k in required_keys if k not in cfg]
           if missing:
@@ -89,7 +144,6 @@ jobs:
               print("  Present keys:", list(cfg.keys()))
               sys.exit(1)
 
-          # Check nft sub-keys
           nft = cfg["nft"]
           required_nft_keys = ["card", "metadata", "blockchain"]
           missing_nft = [k for k in required_nft_keys if k not in nft]
