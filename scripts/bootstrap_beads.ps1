@@ -3,9 +3,17 @@ $ErrorActionPreference = "Stop"
 $Root = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
 Set-Location $Root
 
+$NorthTitle = "Yappyverse North Star — owner directs outcomes, agents execute verified work"
+$MilestoneTitle = "Milestone 1 — autonomous ASC3ND Why We Started Reel acceptance run"
+
 if (-not (Get-Command bd -ErrorAction SilentlyContinue)) {
-    Write-Host "[beads] bd not found; installing official gastownhall/beads release..."
-    irm https://raw.githubusercontent.com/gastownhall/beads/main/install.ps1 | iex
+    Write-Error @"
+[beads] bd is not installed.
+Install Beads from an official, checksum-verified gastownhall/beads release,
+then re-run this script. Do not pipe mutable remote installer content to PowerShell.
+Official releases: https://github.com/gastownhall/beads/releases
+"@
+    exit 2
 }
 
 bd version
@@ -18,39 +26,52 @@ if (-not (Test-Path (Join-Path $Root ".beads"))) {
 try { bd setup codex | Out-Null } catch {}
 try { bd setup claude | Out-Null } catch {}
 
-$existing = $null
-try { $existing = bd list --json | ConvertFrom-Json } catch {}
-$northExists = $false
-if ($existing) {
-    $northExists = @($existing) | Where-Object { $_.title -like "Yappyverse North Star*" } | ForEach-Object { $true } | Select-Object -First 1
+function Get-BeadByTitle([string]$Title) {
+    $items = bd list --json | ConvertFrom-Json
+    return @($items) | Where-Object { $_.title -eq $Title } | Select-Object -First 1
 }
 
-if ($northExists) {
-    Write-Host "[beads] North Star already seeded; no duplicate created."
+function New-Bead([string]$Title, [int]$Priority = 0) {
+    $obj = bd create $Title -p $Priority --json | ConvertFrom-Json
+    if ($obj -is [System.Array]) { return $obj[0] }
+    return $obj
 }
-else {
-    Write-Host "[beads] seeding North Star graph..."
 
-    $northRaw = bd create "Yappyverse North Star — owner directs outcomes, agents execute verified work" -p 0 --json
-    $northObj = $northRaw | ConvertFrom-Json
-    if ($northObj -is [System.Array]) { $northObj = $northObj[0] }
-    $NorthId = $northObj.id
+Write-Host "[beads] reconciling North Star graph..."
+$North = Get-BeadByTitle $NorthTitle
+if (-not $North) { $North = New-Bead $NorthTitle 0 }
+$NorthId = $North.id
 
-    $milestoneRaw = bd create "Milestone 1 — autonomous ASC3ND Why We Started Reel acceptance run" -p 0 --json
-    $milestoneObj = $milestoneRaw | ConvertFrom-Json
-    if ($milestoneObj -is [System.Array]) { $milestoneObj = $milestoneObj[0] }
-    $MilestoneId = $milestoneObj.id
+$Milestone = Get-BeadByTitle $MilestoneTitle
+if (-not $Milestone) { $Milestone = New-Bead $MilestoneTitle 0 }
+$MilestoneId = $Milestone.id
 
+bd update $NorthId --description "MODE: operating-system transformation. OUTCOME: owner directs outcomes instead of routing tasks. TARGET: autonomous, sovereign Yappyverse agent network. CONSTRAINTS: Beads mandatory; evidence before claims; cost governed; human gates for publishing/irreversible/high-consequence actions. PROOF: repeated end-to-end verified commercial or mission outcomes without owner task routing. COMMERCIAL VALUE: operating leverage, reusable IP, client delivery, revenue."
+
+bd update $MilestoneId --description "MODE: production acceptance test. OUTCOME: prepare ASC3ND Wednesday 'Why We Started' Reel end-to-end without owner routing. TARGET: review-ready final MP4 + story/timestamp/cost/QA receipts. CONSTRAINTS: real footage/voice only; no publish before approval; Opus costs tracked; builders cannot self-approve. PROOF: final review MP4, independent taste + truth/privacy verdict, Opus credit delta, caption/post proposal. COMMERCIAL VALUE: proves Yappyverse can autonomously fulfill repeatable client media work."
+
+$MilestoneDetail = bd show $MilestoneId --json | ConvertFrom-Json
+if ($MilestoneDetail -is [System.Array]) { $MilestoneDetail = $MilestoneDetail[0] }
+$DependencyIds = @()
+foreach ($dep in @($MilestoneDetail.dependencies)) {
+    if ($dep -is [string]) {
+        $DependencyIds += $dep
+        continue
+    }
+    foreach ($name in @("id", "depends_on_id", "dependency_id", "parent_id")) {
+        if ($dep.PSObject.Properties.Name -contains $name -and $dep.$name) {
+            $DependencyIds += [string]$dep.$name
+        }
+    }
+}
+
+if ($DependencyIds -notcontains $NorthId) {
     bd dep add $MilestoneId $NorthId
-
-    bd update $NorthId --description "MODE: operating-system transformation. OUTCOME: owner directs outcomes instead of routing tasks. TARGET: autonomous, sovereign Yappyverse agent network. CONSTRAINTS: Beads mandatory; evidence before claims; cost governed; human gates for publishing/irreversible/high-consequence actions. PROOF: repeated end-to-end verified commercial or mission outcomes without owner task routing. COMMERCIAL VALUE: operating leverage, reusable IP, client delivery, revenue."
-
-    bd update $MilestoneId --description "MODE: production acceptance test. OUTCOME: prepare ASC3ND Wednesday 'Why We Started' Reel end-to-end without owner routing. TARGET: review-ready final MP4 + story/timestamp/cost/QA receipts. CONSTRAINTS: real footage/voice only; no publish before approval; Opus costs tracked; builders cannot self-approve. PROOF: final review MP4, independent taste + truth/privacy verdict, Opus credit delta, caption/post proposal. COMMERCIAL VALUE: proves Yappyverse can autonomously fulfill repeatable client media work."
-
-    Write-Host "[beads] North Star: $NorthId"
-    Write-Host "[beads] First milestone: $MilestoneId"
-    Write-Host "[beads] Claim the milestone when execution begins: bd update $MilestoneId --claim"
 }
+
+Write-Host "[beads] North Star: $NorthId"
+Write-Host "[beads] First milestone: $MilestoneId"
+Write-Host "[beads] Claim the milestone when execution begins: bd update $MilestoneId --claim"
 
 bd prime
 bd ready --json
