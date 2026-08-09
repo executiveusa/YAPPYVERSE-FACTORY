@@ -47,7 +47,8 @@ for item in items:
 create_bead() {
   local title="$1"
   local priority="$2"
-  bd create "$title" -p "$priority" --json | python -c '
+  shift 2
+  bd create "$title" -p "$priority" "$@" --json | python -c '
 import json, sys
 x = json.load(sys.stdin)
 x = x[0] if isinstance(x, list) else x
@@ -58,12 +59,14 @@ print(x["id"])
 echo "[beads] reconciling North Star graph..."
 NORTH_ID="$(find_bead_id "$NORTH_TITLE")"
 if [ -z "$NORTH_ID" ]; then
-  NORTH_ID="$(create_bead "$NORTH_TITLE" 0)"
+  NORTH_ID="$(create_bead "$NORTH_TITLE" 0 -t epic)"
 fi
 
 MILESTONE_ID="$(find_bead_id "$MILESTONE_TITLE")"
 if [ -z "$MILESTONE_ID" ]; then
-  MILESTONE_ID="$(create_bead "$MILESTONE_TITLE" 0)"
+  # --parent creates hierarchy without making the long-lived North Star a
+  # completion blocker. Child work remains discoverable through `bd ready`.
+  MILESTONE_ID="$(create_bead "$MILESTONE_TITLE" 0 --parent "$NORTH_ID")"
 fi
 
 # Always reconcile descriptions so interrupted bootstrap runs self-heal.
@@ -71,27 +74,12 @@ bd update "$NORTH_ID" --description "MODE: operating-system transformation. OUTC
 
 bd update "$MILESTONE_ID" --description "MODE: production acceptance test. OUTCOME: prepare ASC3ND Wednesday 'Why We Started' Reel end-to-end without owner routing. TARGET: review-ready final MP4 + story/timestamp/cost/QA receipts. CONSTRAINTS: real footage/voice only; no publish before approval; Opus costs tracked; builders cannot self-approve. PROOF: final review MP4, independent taste + truth/privacy verdict, Opus credit delta, caption/post proposal. COMMERCIAL VALUE: proves Yappyverse can autonomously fulfill repeatable client media work."
 
-HAS_DEP="$(bd show "$MILESTONE_ID" --json | python -c '
-import json, sys
-parent = sys.argv[1]
-x = json.load(sys.stdin)
-x = x[0] if isinstance(x, list) else x
-deps = x.get("dependencies") or [] if isinstance(x, dict) else []
-ids = set()
-for dep in deps:
-    if isinstance(dep, str):
-        ids.add(dep)
-    elif isinstance(dep, dict):
-        for key in ("id", "depends_on_id", "dependency_id", "parent_id"):
-            value = dep.get(key)
-            if value:
-                ids.add(str(value))
-print("yes" if parent in ids else "no")
-' "$NORTH_ID")"
-
-if [ "$HAS_DEP" != "yes" ]; then
-  bd dep add "$MILESTONE_ID" "$NORTH_ID"
-fi
+# Reconcile the edge type on every run. A previous bootstrap version created a
+# default `blocks` edge here, which would keep this milestone off `bd ready`
+# forever because the North Star is intentionally long-lived. Remove any old
+# edge, then restore the correct hierarchy relation.
+bd dep remove "$MILESTONE_ID" "$NORTH_ID" >/dev/null 2>&1 || true
+bd dep add "$MILESTONE_ID" "$NORTH_ID" --type parent-child
 
 echo "[beads] North Star: $NORTH_ID"
 echo "[beads] First milestone: $MILESTONE_ID"
