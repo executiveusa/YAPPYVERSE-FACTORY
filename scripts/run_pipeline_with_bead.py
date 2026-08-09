@@ -12,16 +12,18 @@ from pipeline import run_batch, run_character
 
 
 def main() -> int:
+    """Validate a claimed Bead, then dispatch exactly one factory target."""
     parser = argparse.ArgumentParser(description="YAPPYVERSE Beads-gated Character Factory")
     parser.add_argument("--bead-id", default=os.environ.get("BEAD_ID"), help="Active Beads work-item ID")
-    parser.add_argument("--character", help="Character canonical ID (e.g. pauli)")
+    target = parser.add_mutually_exclusive_group(required=True)
+    target.add_argument("--character", help="Character canonical ID (e.g. pauli)")
+    target.add_argument("--batch", action="store_true", help="Run all queued characters")
     parser.add_argument(
         "--stage",
         default="all",
         choices=["all", "scan", "model", "rig", "nft", "qa"],
-        help="Pipeline stage to run (default: all)",
+        help="Pipeline stage to run for --character (default: all)",
     )
-    parser.add_argument("--batch", action="store_true", help="Run all queued characters")
     args = parser.parse_args()
 
     try:
@@ -35,12 +37,9 @@ def main() -> int:
     if args.batch:
         run_batch()
         return 0
-    if args.character:
-        run_character(args.character, stage=args.stage)
-        return 0
 
-    parser.error("provide --character <id> or --batch")
-    return 2
+    run_character(args.character, stage=args.stage)
+    return 0
 
 
 if __name__ == "__main__":
