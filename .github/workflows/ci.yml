@@ -25,7 +25,34 @@ jobs:
           python -m py_compile scripts/scan_assets.py
           python -m py_compile scripts/wire_env.py
           python -m py_compile scripts/auto_rig.py
+          python -m py_compile scripts/beads_guard.py
+          python -m py_compile scripts/run_pipeline_with_bead.py
           echo "All Python scripts passed syntax check"
+
+      - name: Validate Beads governance contract
+        run: |
+          python - <<'EOF'
+          from pathlib import Path
+          required = [
+              Path("docs/NORTH_STAR.md"),
+              Path("docs/BEADS_POLICY.md"),
+              Path("scripts/beads_guard.py"),
+              Path("scripts/run_pipeline_with_bead.py"),
+              Path("scripts/bootstrap_beads.sh"),
+              Path("scripts/bootstrap_beads.ps1"),
+          ]
+          missing = [str(p) for p in required if not p.exists()]
+          if missing:
+              raise SystemExit("Missing Beads governance files: " + ", ".join(missing))
+
+          policy = Path("docs/BEADS_POLICY.md").read_text(encoding="utf-8")
+          north = Path("docs/NORTH_STAR.md").read_text(encoding="utf-8")
+          if "No substantive Yappyverse work exists unless it has a Bead" not in policy:
+              raise SystemExit("Beads mandatory policy text missing")
+          if "direct outcomes instead of managing tasks" not in north:
+              raise SystemExit("North Star contract missing")
+          print("Beads governance contract present")
+          EOF
 
       - name: Validate JSON configs
         run: |
@@ -64,6 +91,8 @@ jobs:
               ".env.template",
               ".gitignore",
               "README.md",
+              "docs/NORTH_STAR.md",
+              "docs/BEADS_POLICY.md",
           ]
           missing = [p for p in required if not os.path.exists(p)]
           if missing:
@@ -81,7 +110,6 @@ jobs:
           with open("assets/pauli/CHARACTER_CONFIG.json") as f:
               cfg = json.load(f)
 
-          # Check top-level keys that must exist in every CHARACTER_CONFIG
           required_keys = ["identity", "palette", "model", "nft"]
           missing = [k for k in required_keys if k not in cfg]
           if missing:
@@ -89,7 +117,6 @@ jobs:
               print("  Present keys:", list(cfg.keys()))
               sys.exit(1)
 
-          # Check nft sub-keys
           nft = cfg["nft"]
           required_nft_keys = ["card", "metadata", "blockchain"]
           missing_nft = [k for k in required_nft_keys if k not in nft]
