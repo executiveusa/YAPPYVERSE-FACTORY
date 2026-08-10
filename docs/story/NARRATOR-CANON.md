@@ -6,7 +6,11 @@ LOCKED SHARED STORY RULE
 ## Core premise
 The Yappyverse is told through incomplete witnesses, surveillance systems, recovered evidence, rumors, and characters with limited or compromised knowledge. Nobody gets to explain the whole truth at once.
 
-Pauli is the central protagonist, but his identity, motives, origin, and mission are deliberately withheld. His influence should be visible before he is.
+Pauli is the central protagonist and the singular mystery character at the center of the universe. His identity, motives, origin, and mission are deliberately withheld. His influence should be visible before he is.
+
+Other Yappyverse characters are not required to remain hidden as long as Pauli. They may be visually and emotionally revealed much sooner. What remains concealed is how each of them connects to Pauli and to the larger mission.
+
+See also: `docs/story/PAULI-GRAVITY-AND-MISSION-CELL-CANON.md`.
 
 ## Narrator
 A recurring unidentified storyteller narrates portions of the series.
@@ -55,27 +59,26 @@ For roughly the first 7–8 episodes:
 
 The audience should construct an idea of Pauli before the series begins proving or disproving those assumptions.
 
-## Faceless cast rule
-The Yappyverse is predominantly faceless.
+## Character reveal rule
+**The Yappyverse characters may be discovered. Pauli must be inferred.**
 
-Characters may be shown through:
-- backs;
-- silhouettes;
-- reflections;
-- shadows;
-- low umbrellas;
-- masks;
-- partial bodies;
-- transformed/shapeshifted forms;
-- surveillance errors;
-- obstructed sightlines.
+Core and secondary Yappyverse characters may be revealed earlier through clear visual appearances, dialogue, personality, relationships, humor, conflict, and human interaction.
 
-A clean face reveal is a rare story event and may be tied to screenshot, sighting, prize, or other game mechanics.
+Their deeper relationship to Pauli should remain hidden longer than their identity.
+
+The mystery should therefore operate at different depths:
+- Pauli: identity + motive + origin + mission remain deeply obscured;
+- core Yappyverse cast: identity may be known, Pauli connection remains hidden;
+- secondary cast: more immediately legible, but still capable of carrying hidden mission edges;
+- humans: audience anchors who may misinterpret what they see;
+- opposition: individual actors may be visible while their command structure remains hidden.
 
 ## Protective-cast rule
-Supporting Yappyverse characters are generally protective of Pauli, but the audience should not understand why at first.
+Supporting Yappyverse characters are generally protective of Pauli or of the mission, but the audience should not understand why at first.
 
-Their actions may initially look suspicious, evasive, or criminal when viewed through hostile surveillance. Later episodes may reframe those same actions as protection, rescue, misdirection, or mission support.
+Their actions may initially look suspicious, evasive, criminal, competitive, or unrelated when viewed through hostile surveillance. Later episodes may reframe those same actions as protection, rescue, misdirection, compartmentalized mission support, or coordinated staging.
+
+Some characters may not know Pauli personally. Some may not know Pauli selected them. Some may believe they were recruited by someone else entirely.
 
 ## Shapeshifter rule
 Yappyverse characters are future-origin animal beings capable of changing apparent form.
@@ -98,7 +101,8 @@ Examples:
 - food banks, shelters, youth programs, and other social-purpose locations may appear as ordinary background or surveillance stops long before the audience understands why Pauli is repeatedly connected to them;
 - the Cadillac may first appear to be a tracking vulnerability before being reinterpreted as deliberate misdirection;
 - low Seattle umbrellas may initially look like weather behavior before being revealed as anti-drone counter-surveillance;
-- official drone labels may later be revealed as biased, incomplete, or hostile framing.
+- official drone labels may later be revealed as biased, incomplete, or hostile framing;
+- apparently separate Yappyverse characters may later be revealed as individually selected parts of the same mission.
 
 Do not explain Pauli's social-purpose mission early.
 
@@ -128,9 +132,9 @@ Every source may contain:
 The audience assembles the truth.
 
 ## Creative influence boundary
-Use general mystery and crime-story principles such as unreliable narration, myth-building through indirect evidence, conflicting testimony, delayed identity, reversals, and recontextualization.
+Use general mystery, crime-story, caper, and stage-magic principles such as unreliable narration, myth-building through indirect evidence, conflicting testimony, delayed identity, compartmentalized teams, misdirection, reversals, hidden coordination, and recontextualization.
 
-Do not copy dialogue, plot, characters, scenes, prose, or distinctive expression from existing films, books, or television.
+Do not copy dialogue, plot, characters, scenes, tricks, prose, or distinctive expression from existing films, books, or television.
 
 ## Production consequence
 All episode maps should now track:
@@ -139,5 +143,7 @@ All episode maps should now track:
 - what the narrator withholds;
 - what the audience assumes;
 - what surveillance claims;
+- what each visible character believes their mission is;
+- what each character actually knows about Pauli;
 - what is actually true in canon;
 - what later episode will reinterpret the clue.
