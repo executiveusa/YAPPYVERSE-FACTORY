@@ -1,0 +1,337 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-08-10T22:45:00Z",
+  "source": "Mission 001 verified core seed",
+  "nodes": [
+    {
+      "id": "repo:executiveusa/YAPPYVERSE-FACTORY",
+      "type": "REPOSITORY",
+      "name": "YAPPYVERSE-FACTORY",
+      "authority": "character/media production",
+      "status": "ACTIVE",
+      "disposition": "ACTIVATE",
+      "district": "STORY_IP",
+      "repo": "executiveusa/YAPPYVERSE-FACTORY",
+      "deployment_url": "https://yappyverse-factory.vercel.app",
+      "health": "deployment project exists; runtime not revalidated in this seed",
+      "summary": "Character/media factory and shared production layer.",
+      "active_missions": ["mission-001-pauliverse-command-world"],
+      "financial_signals": [],
+      "owner_approvals_required": [],
+      "evidence_refs": ["docs/pauliverse/MISSION-001-PAULIVERSE-COMMAND-WORLD.md"],
+      "provenance": {
+        "source_type": "github+vercel",
+        "source_ref": "executiveusa/YAPPYVERSE-FACTORY + Vercel project yappyverse-factory",
+        "observed_at": "2026-08-10T22:45:00Z",
+        "confidence": 1.0
+      }
+    },
+    {
+      "id": "repo:executiveusa/pauli-hermes-agent",
+      "type": "REPOSITORY",
+      "name": "Pauli Hermes Agent",
+      "authority": "portfolio orchestration",
+      "status": "BLOCKED",
+      "disposition": "ACTIVATE",
+      "district": "AGENTS_CAPABILITIES",
+      "repo": "executiveusa/pauli-hermes-agent",
+      "deployment_url": "https://pauli-hermes-agent-the-pauli-effect.vercel.app",
+      "health": "Vercel production build blocked by incorrect Next.js/root detection on FastAPI project",
+      "summary": "Authoritative portfolio orchestrator using ICM, repo-as-node ontology, signal/noise filtering and bounded council decisions.",
+      "active_missions": ["mission-001-pauliverse-command-world"],
+      "financial_signals": [],
+      "owner_approvals_required": [],
+      "evidence_refs": ["Vercel deployment dpl_JBo4vTYdaH15FT9v66aSnLGTwAfS"],
+      "provenance": {
+        "source_type": "github+vercel",
+        "source_ref": "executiveusa/pauli-hermes-agent + Vercel project pauli-hermes-agent",
+        "observed_at": "2026-08-10T22:45:00Z",
+        "confidence": 1.0
+      }
+    },
+    {
+      "id": "repo:executiveusa/pauli-pi-agent",
+      "type": "REPOSITORY",
+      "name": "Pauli Pi Agent",
+      "authority": "bounded execution worker",
+      "status": "ACTIVE",
+      "disposition": "ACTIVATE",
+      "district": "AGENTS_CAPABILITIES",
+      "repo": "executiveusa/pauli-pi-agent",
+      "deployment_url": "https://pauli-pi-agent-the-pauli-effect.vercel.app",
+      "health": "role boundary corrected; deployment health not revalidated in this seed",
+      "summary": "Execution worker that receives bounded Hermes missions and returns evidence/proof packets.",
+      "active_missions": [],
+      "financial_signals": [],
+      "owner_approvals_required": [],
+      "evidence_refs": ["docs/icm/PI-WORKER-INTEROPERABILITY.md in pauli-pi-agent"],
+      "provenance": {
+        "source_type": "github+vercel",
+        "source_ref": "executiveusa/pauli-pi-agent + Vercel project pauli-pi-agent",
+        "observed_at": "2026-08-10T22:45:00Z",
+        "confidence": 1.0
+      }
+    },
+    {
+      "id": "repo:executiveusa/PAULIS-PLACE",
+      "type": "REPOSITORY",
+      "name": "Pauli's Place",
+      "authority": "commercial execution and owner observation cockpit",
+      "status": "HEALTHY",
+      "disposition": "ACTIVATE",
+      "district": "BUSINESS",
+      "repo": "executiveusa/PAULIS-PLACE",
+      "deployment_url": "https://paulis-place.vercel.app",
+      "health": "production HTTP 200; no inspected 24h runtime errors; /lounge exists",
+      "summary": "Commercial opportunity node, approval/product/research control plane, and target 3D Command World.",
+      "active_missions": ["mission-001-pauliverse-command-world"],
+      "financial_signals": ["opp:pauli-puzzle-limited-edition-001"],
+      "owner_approvals_required": ["public launch price/spend/token-benefit claims"],
+      "evidence_refs": ["Vercel project prj_dPv8hJP4QMmAhN4AEW62H5zpQFxU", "https://paulis-place.vercel.app/lounge"],
+      "provenance": {
+        "source_type": "user+vercel",
+        "source_ref": "user-provided executiveusa/PAULIS-PLACE + verified Vercel deployment",
+        "observed_at": "2026-08-10T22:45:00Z",
+        "confidence": 1.0
+      }
+    },
+    {
+      "id": "repo:executiveusa/wherespauli",
+      "type": "REPOSITORY",
+      "name": "Where's Pauli",
+      "authority": "Pauli story/IP canon",
+      "status": "ACTIVE",
+      "disposition": "ACTIVATE",
+      "district": "STORY_IP",
+      "repo": "executiveusa/wherespauli",
+      "deployment_url": null,
+      "health": "story engine and pressure progression locked; deployment not evaluated in this seed",
+      "summary": "Story/IP laboratory for Pauli canon, episodes, clues, puzzles and story mechanics.",
+      "active_missions": [],
+      "financial_signals": ["opp:pauli-puzzle-limited-edition-001"],
+      "owner_approvals_required": ["major canon changes"],
+      "evidence_refs": ["Where's Pauli story-engine commits and prior approved canon"],
+      "provenance": {
+        "source_type": "prior-github-session",
+        "source_ref": "executiveusa/wherespauli",
+        "observed_at": "2026-08-10T22:45:00Z",
+        "confidence": 0.95
+      }
+    },
+    {
+      "id": "agent:hermes",
+      "type": "AGENT",
+      "name": "Hermes",
+      "authority": "portfolio orchestration",
+      "status": "BLOCKED",
+      "disposition": "ACTIVATE",
+      "district": "AGENTS_CAPABILITIES",
+      "repo": "executiveusa/pauli-hermes-agent",
+      "deployment_url": "https://pauli-hermes-agent-the-pauli-effect.vercel.app",
+      "health": "cloud deployment blocked",
+      "summary": "Primary portfolio orchestrator and council synthesizer.",
+      "active_missions": ["mission-001-pauliverse-command-world"],
+      "financial_signals": [],
+      "owner_approvals_required": [],
+      "evidence_refs": ["docs/icm/HERMES-PAULIVERSE-ORCHESTRATOR.md in pauli-hermes-agent"],
+      "provenance": {
+        "source_type": "github+vercel",
+        "source_ref": "pauli-hermes-agent",
+        "observed_at": "2026-08-10T22:45:00Z",
+        "confidence": 1.0
+      }
+    },
+    {
+      "id": "agent:pi",
+      "type": "AGENT",
+      "name": "Pauli Pi Worker",
+      "authority": "bounded execution",
+      "status": "ACTIVE",
+      "disposition": "ACTIVATE",
+      "district": "AGENTS_CAPABILITIES",
+      "repo": "executiveusa/pauli-pi-agent",
+      "deployment_url": null,
+      "health": "role contract verified",
+      "summary": "Subordinate worker for bounded coding/tool/local missions.",
+      "active_missions": [],
+      "financial_signals": [],
+      "owner_approvals_required": [],
+      "evidence_refs": ["pauli-pi-agent PR #59"],
+      "provenance": {
+        "source_type": "github",
+        "source_ref": "executiveusa/pauli-pi-agent#59",
+        "observed_at": "2026-08-10T22:45:00Z",
+        "confidence": 1.0
+      }
+    },
+    {
+      "id": "opp:pauli-puzzle-limited-edition-001",
+      "type": "OPPORTUNITY",
+      "name": "Limited Edition Pauli Puzzle",
+      "authority": "Pauli's Place commercial experiment",
+      "status": "NEEDS_APPROVAL",
+      "disposition": "ACTIVATE",
+      "district": "BUSINESS",
+      "repo": "executiveusa/PAULIS-PLACE",
+      "deployment_url": null,
+      "health": "commercial concept approved; vendor/unit economics/launch path not yet proven",
+      "summary": "Limited numbered puzzle/puzzle-book line with real-artist signature, collectible authentication/digital-unlock card, and story-linked clues.",
+      "active_missions": ["mission-001-pauliverse-command-world"],
+      "financial_signals": ["POD", "collectible", "direct-sale", "story-linked merchandise"],
+      "owner_approvals_required": ["edition size", "artist agreement", "price", "initial spend", "token utility/rights"],
+      "evidence_refs": ["docs/pauliverse/PAULIS-PLACE-FINANCIAL-HANDOFF.md", "owner approved first go-to-market direction"],
+      "provenance": {
+        "source_type": "owner-decision",
+        "source_ref": "2026-08-10 conversation",
+        "observed_at": "2026-08-10T22:45:00Z",
+        "confidence": 1.0
+      }
+    },
+    {
+      "id": "deployment:paulis-place-prod",
+      "type": "DEPLOYMENT",
+      "name": "Pauli's Place Production",
+      "authority": "Vercel deployment state",
+      "status": "HEALTHY",
+      "disposition": "ACTIVATE",
+      "district": "INFRASTRUCTURE",
+      "repo": "executiveusa/PAULIS-PLACE",
+      "deployment_url": "https://paulis-place.vercel.app",
+      "health": "READY / HTTP 200",
+      "summary": "Current production shell containing the existing 3D Lounge route.",
+      "active_missions": ["mission-001-pauliverse-command-world"],
+      "financial_signals": [],
+      "owner_approvals_required": [],
+      "evidence_refs": ["Vercel deployment dpl_FhdW6C2UWiyNLrr8K7BcCEA8PHGP"],
+      "provenance": {
+        "source_type": "vercel",
+        "source_ref": "prj_dPv8hJP4QMmAhN4AEW62H5zpQFxU",
+        "observed_at": "2026-08-10T22:45:00Z",
+        "confidence": 1.0
+      }
+    },
+    {
+      "id": "deployment:hermes-prod",
+      "type": "DEPLOYMENT",
+      "name": "Hermes Production",
+      "authority": "Vercel deployment state",
+      "status": "BLOCKED",
+      "disposition": "ACTIVATE",
+      "district": "INFRASTRUCTURE",
+      "repo": "executiveusa/pauli-hermes-agent",
+      "deployment_url": "https://pauli-hermes-agent-the-pauli-effect.vercel.app",
+      "health": "ERROR: No Next.js version detected; root/framework mismatch",
+      "summary": "Current Hermes Vercel production deployment blocker.",
+      "active_missions": ["mission-001-pauliverse-command-world"],
+      "financial_signals": [],
+      "owner_approvals_required": [],
+      "evidence_refs": ["Vercel deployment dpl_JBo4vTYdaH15FT9v66aSnLGTwAfS"],
+      "provenance": {
+        "source_type": "vercel",
+        "source_ref": "prj_hLAOeM1ml6C0Pp5uIApODsIhC83A",
+        "observed_at": "2026-08-10T22:45:00Z",
+        "confidence": 1.0
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge:hermes-builds-ontology",
+      "source": "agent:hermes",
+      "target": "repo:executiveusa/YAPPYVERSE-FACTORY",
+      "type": "REUSES",
+      "active": true,
+      "mission_id": "mission-001-pauliverse-command-world",
+      "provenance": {
+        "source_type": "mission-contract",
+        "source_ref": "docs/pauliverse/MISSION-001-PAULIVERSE-COMMAND-WORLD.md",
+        "observed_at": "2026-08-10T22:45:00Z",
+        "confidence": 1.0
+      }
+    },
+    {
+      "id": "edge:hermes-delegates-pi",
+      "source": "agent:hermes",
+      "target": "agent:pi",
+      "type": "DELEGATES_TO",
+      "active": false,
+      "mission_id": null,
+      "provenance": {
+        "source_type": "role-contract",
+        "source_ref": "pauli-pi-agent PR #59",
+        "observed_at": "2026-08-10T22:45:00Z",
+        "confidence": 1.0
+      }
+    },
+    {
+      "id": "edge:wherespauli-routes-puzzle",
+      "source": "repo:executiveusa/wherespauli",
+      "target": "opp:pauli-puzzle-limited-edition-001",
+      "type": "MONETIZES",
+      "active": true,
+      "mission_id": "mission-001-pauliverse-command-world",
+      "provenance": {
+        "source_type": "owner-decision",
+        "source_ref": "2026-08-10 conversation",
+        "observed_at": "2026-08-10T22:45:00Z",
+        "confidence": 1.0
+      }
+    },
+    {
+      "id": "edge:puzzle-routes-paulisplace",
+      "source": "opp:pauli-puzzle-limited-edition-001",
+      "target": "repo:executiveusa/PAULIS-PLACE",
+      "type": "ROUTES_TO",
+      "active": true,
+      "mission_id": "mission-001-pauliverse-command-world",
+      "provenance": {
+        "source_type": "financial-routing-law",
+        "source_ref": "docs/pauliverse/PAULIS-PLACE-FINANCIAL-HANDOFF.md",
+        "observed_at": "2026-08-10T22:45:00Z",
+        "confidence": 1.0
+      }
+    },
+    {
+      "id": "edge:paulisplace-deployed-as-prod",
+      "source": "repo:executiveusa/PAULIS-PLACE",
+      "target": "deployment:paulis-place-prod",
+      "type": "DEPLOYED_AS",
+      "active": true,
+      "mission_id": "mission-001-pauliverse-command-world",
+      "provenance": {
+        "source_type": "vercel",
+        "source_ref": "prj_dPv8hJP4QMmAhN4AEW62H5zpQFxU",
+        "observed_at": "2026-08-10T22:45:00Z",
+        "confidence": 1.0
+      }
+    },
+    {
+      "id": "edge:hermes-deployed-as-prod",
+      "source": "repo:executiveusa/pauli-hermes-agent",
+      "target": "deployment:hermes-prod",
+      "type": "DEPLOYED_AS",
+      "active": true,
+      "mission_id": "mission-001-pauliverse-command-world",
+      "provenance": {
+        "source_type": "vercel",
+        "source_ref": "prj_hLAOeM1ml6C0Pp5uIApODsIhC83A",
+        "observed_at": "2026-08-10T22:45:00Z",
+        "confidence": 1.0
+      }
+    },
+    {
+      "id": "edge:yappyverse-supports-wherespauli",
+      "source": "repo:executiveusa/YAPPYVERSE-FACTORY",
+      "target": "repo:executiveusa/wherespauli",
+      "type": "SUPPORTS",
+      "active": true,
+      "mission_id": null,
+      "provenance": {
+        "source_type": "portfolio-contract",
+        "source_ref": "docs/pauliverse/PAULIVERSE-OPERATING-CONTRACT.md",
+        "observed_at": "2026-08-10T22:45:00Z",
+        "confidence": 1.0
+      }
+    }
+  ]
+}

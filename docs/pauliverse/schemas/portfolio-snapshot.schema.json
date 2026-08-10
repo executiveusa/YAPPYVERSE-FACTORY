@@ -1,0 +1,119 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://pauliverse.internal/schemas/portfolio-snapshot.schema.json",
+  "title": "Pauliverse Portfolio Snapshot",
+  "type": "object",
+  "required": ["schema_version", "generated_at", "nodes", "edges"],
+  "properties": {
+    "schema_version": { "type": "integer", "const": 1 },
+    "generated_at": { "type": "string", "format": "date-time" },
+    "source": { "type": "string" },
+    "nodes": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/node" }
+    },
+    "edges": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/edge" }
+    }
+  },
+  "$defs": {
+    "node": {
+      "type": "object",
+      "required": ["id", "type", "name", "authority", "status", "disposition", "provenance"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "type": {
+          "type": "string",
+          "enum": [
+            "REPOSITORY", "PROJECT", "BUSINESS", "AGENT", "CAPABILITY", "SKILL",
+            "IDEA", "IP_ASSET", "CHARACTER", "STORY_CANON", "PRODUCT", "OPPORTUNITY",
+            "EXPERIMENT", "DECISION", "EVIDENCE", "CUSTOMER", "PARTNER", "CAUSE", "DEPLOYMENT"
+          ]
+        },
+        "name": { "type": "string", "minLength": 1 },
+        "authority": { "type": "string", "minLength": 1 },
+        "status": {
+          "type": "string",
+          "enum": ["ACTIVE", "TESTING", "BLOCKED", "NEEDS_APPROVAL", "HEALTHY", "DEGRADED", "UNKNOWN", "ARCHIVED"]
+        },
+        "disposition": {
+          "type": "string",
+          "enum": ["ACTIVATE", "CONSOLIDATE", "ARCHIVE", "DELETE_CANDIDATE", "UNCLASSIFIED"]
+        },
+        "district": {
+          "type": "string",
+          "enum": ["BUSINESS", "STORY_IP", "AGENTS_CAPABILITIES", "INFRASTRUCTURE", "SOCIAL_PURPOSE", "ARCHIVE"]
+        },
+        "repo": { "type": ["string", "null"] },
+        "deployment_url": { "type": ["string", "null"] },
+        "health": { "type": ["string", "null"] },
+        "summary": { "type": ["string", "null"] },
+        "active_missions": {
+          "type": "array",
+          "items": { "type": "string" },
+          "default": []
+        },
+        "financial_signals": {
+          "type": "array",
+          "items": { "type": "string" },
+          "default": []
+        },
+        "owner_approvals_required": {
+          "type": "array",
+          "items": { "type": "string" },
+          "default": []
+        },
+        "evidence_refs": {
+          "type": "array",
+          "items": { "type": "string" },
+          "default": []
+        },
+        "provenance": {
+          "type": "object",
+          "required": ["source_type", "source_ref"],
+          "properties": {
+            "source_type": { "type": "string" },
+            "source_ref": { "type": "string" },
+            "observed_at": { "type": ["string", "null"], "format": "date-time" },
+            "confidence": { "type": ["number", "null"], "minimum": 0, "maximum": 1 }
+          },
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": true
+    },
+    "edge": {
+      "type": "object",
+      "required": ["id", "source", "target", "type", "provenance"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "source": { "type": "string", "minLength": 1 },
+        "target": { "type": "string", "minLength": 1 },
+        "type": {
+          "type": "string",
+          "enum": [
+            "OWNS", "BUILDS", "REUSES", "DEPENDS_ON", "DERIVED_FROM", "DUPLICATES",
+            "REPLACES", "MONETIZES", "SUPPORTS", "BENEFITS", "PROVEN_BY", "CONTRADICTED_BY",
+            "ROUTES_TO", "DEPLOYED_AS", "ARCHIVED_AS", "CANONIZED_IN", "DELEGATES_TO"
+          ]
+        },
+        "active": { "type": "boolean", "default": false },
+        "mission_id": { "type": ["string", "null"] },
+        "provenance": {
+          "type": "object",
+          "required": ["source_type", "source_ref"],
+          "properties": {
+            "source_type": { "type": "string" },
+            "source_ref": { "type": "string" },
+            "observed_at": { "type": ["string", "null"], "format": "date-time" },
+            "confidence": { "type": ["number", "null"], "minimum": 0, "maximum": 1 }
+          },
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}
