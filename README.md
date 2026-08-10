@@ -13,6 +13,15 @@ Governance sources:
 - `docs/NORTH_STAR.md` — governing goal and measurable definition of success
 - `docs/BEADS_POLICY.md` — mandatory work-tracking policy
 
+## Pauliverse operating layer
+
+`Pauliverse` is an internal systems term for the connected portfolio of repositories, agents, IP, commercial systems, and social-purpose work. For cross-repository work, read:
+
+- `docs/pauliverse/PAULIVERSE-OPERATING-CONTRACT.md` — repo-as-node model, ICM portability, master ontology, signal/noise filter, adversarial decision passes, and portfolio triage.
+- `docs/pauliverse/PAULIS-PLACE-FINANCIAL-HANDOFF.md` — mandatory routing contract for financial opportunities to Pauli's Place.
+
+YAPPYVERSE-FACTORY remains the character/media factory; it does not become the canonical financial ledger or the authoritative home for every portfolio fact.
+
 ## Structure
 
 ```text
