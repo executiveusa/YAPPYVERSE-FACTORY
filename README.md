@@ -19,6 +19,7 @@ Governance sources:
 
 - `docs/pauliverse/PAULIVERSE-OPERATING-CONTRACT.md` — repo-as-node model, ICM portability, master ontology, signal/noise filter, adversarial decision passes, and portfolio triage.
 - `docs/pauliverse/PAULIS-PLACE-FINANCIAL-HANDOFF.md` — mandatory routing contract for financial opportunities to Pauli's Place.
+- `docs/pauliverse/MISSION-001-PAULIVERSE-COMMAND-WORLD.md` — active gauntlet mission for the extended working prototype, hardened cross-node connections, and Pauli's Place 3D observation cockpit.
 
 YAPPYVERSE-FACTORY remains the character/media factory; it does not become the canonical financial ledger or the authoritative home for every portfolio fact.
 
