@@ -1,0 +1,10 @@
+{
+  "name": "pauli-factory-slice1-demo",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "demo": "node demo.mjs",
+    "serve": "node src/server.mjs"
+  }
+}

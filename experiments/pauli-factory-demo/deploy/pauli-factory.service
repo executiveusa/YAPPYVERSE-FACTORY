@@ -1,0 +1,24 @@
+[Unit]
+Description=Pauli Autonomous Software Factory
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=pauli-factory
+Group=pauli-factory
+WorkingDirectory=/opt/pauli-factory
+Environment=NODE_ENV=production
+Environment=PORT=8787
+Environment=FACTORY_RUNTIME=/var/lib/pauli-factory
+ExecStart=/usr/bin/node /opt/pauli-factory/src/server.mjs
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/pauli-factory
+
+[Install]
+WantedBy=multi-user.target
