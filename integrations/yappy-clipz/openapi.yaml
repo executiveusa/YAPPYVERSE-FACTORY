@@ -174,12 +174,19 @@ components:
         checksum_sha256: { type: string, pattern: '^[A-Fa-f0-9]{64}$' }
         metadata: { type: object, additionalProperties: true }
     Asset:
-      allOf:
-        - $ref: '#/components/schemas/AddAssetRequest'
-        - type: object
-          required: [id]
-          properties:
-            id: { type: string }
+      type: object
+      additionalProperties: false
+      required: [id, tenant_id, kind, source_url]
+      properties:
+        id: { type: string }
+        tenant_id: { type: string, minLength: 1 }
+        kind:
+          type: string
+          enum: [video, audio, image, subtitle, logo, other]
+        source_url: { type: string, format: uri }
+        filename: { type: string }
+        checksum_sha256: { type: string, pattern: '^[A-Fa-f0-9]{64}$' }
+        metadata: { type: object, additionalProperties: true }
     CreateJobRequest:
       type: object
       additionalProperties: false
@@ -230,8 +237,7 @@ components:
           enum: [queued, analyzing, editing, rendering, qa, ready, approved, failed, rejected, cancelled]
         progress: { type: integer, minimum: 0, maximum: 100 }
         error:
-          type: object
-          nullable: true
+          type: [object, 'null']
           properties:
             code: { type: string }
             message: { type: string }
