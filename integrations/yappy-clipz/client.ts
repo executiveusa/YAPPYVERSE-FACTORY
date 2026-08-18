@@ -139,8 +139,8 @@ export class YappyClipzClient {
     });
   }
 
-  getJob(jobId: string): Promise<Job> {
-    return this.request(`/api/v1/jobs/${encodeURIComponent(jobId)}`);
+  getJob(jobId: string, signal?: AbortSignal): Promise<Job> {
+    return this.request(`/api/v1/jobs/${encodeURIComponent(jobId)}`, { signal });
   }
 
   getProject(projectId: string): Promise<Project> {
@@ -161,15 +161,32 @@ export class YappyClipzClient {
   async waitForReady(jobId: string, options: { timeoutMs?: number; pollMs?: number } = {}): Promise<Job> {
     const timeoutMs = options.timeoutMs ?? 10 * 60_000;
     const pollMs = options.pollMs ?? 2_000;
-    const started = Date.now();
+    const deadline = Date.now() + timeoutMs;
 
-    while (Date.now() - started < timeoutMs) {
-      const job = await this.getJob(jobId);
-      if (job.status === 'ready' || job.status === 'approved') return job;
-      if (job.status === 'failed' || job.status === 'rejected' || job.status === 'cancelled') {
-        throw new Error(`YAPPY-CLIPZ job ${job.id} ended in ${job.status}: ${job.error?.message ?? 'no error detail'}`);
+    while (Date.now() < deadline) {
+      const remainingMs = deadline - Date.now();
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), remainingMs);
+
+      try {
+        const job = await this.getJob(jobId, controller.signal);
+        if (job.status === 'ready' || job.status === 'approved') return job;
+        if (job.status === 'failed' || job.status === 'rejected' || job.status === 'cancelled') {
+          throw new Error(`YAPPY-CLIPZ job ${job.id} ended in ${job.status}: ${job.error?.message ?? 'no error detail'}`);
+        }
+      } catch (error) {
+        if (controller.signal.aborted && Date.now() >= deadline) {
+          throw new Error(`YAPPY-CLIPZ job ${jobId} timed out after ${timeoutMs}ms`);
+        }
+        throw error;
+      } finally {
+        clearTimeout(timer);
       }
-      await new Promise((resolve) => setTimeout(resolve, pollMs));
+
+      const sleepMs = Math.min(pollMs, Math.max(0, deadline - Date.now()));
+      if (sleepMs > 0) {
+        await new Promise((resolve) => setTimeout(resolve, sleepMs));
+      }
     }
 
     throw new Error(`YAPPY-CLIPZ job ${jobId} timed out after ${timeoutMs}ms`);
