@@ -1,5 +1,11 @@
 #!/usr/bin/env node
 
+import { createHash } from 'node:crypto';
+import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { spawn } from 'node:child_process';
+
 const required = ['YAPPY_CLIPZ_BASE_URL', 'YAPPY_CLIPZ_TOKEN', 'YAPPY_CLIPZ_SOURCE_URL'];
 for (const key of required) {
   if (!process.env[key]) throw new Error(`Missing required env var: ${key}`);
@@ -11,6 +17,7 @@ const sourceUrl = process.env.YAPPY_CLIPZ_SOURCE_URL;
 const tenantId = process.env.YAPPY_CLIPZ_TENANT_ID || `proof-${Date.now()}`;
 const timeoutMs = Number(process.env.YAPPY_CLIPZ_TIMEOUT_MS || 10 * 60_000);
 const pollMs = Number(process.env.YAPPY_CLIPZ_POLL_MS || 2_000);
+const visualQaPath = process.env.YAPPY_CLIPZ_VISUAL_QA_JSON || null;
 const startedAt = new Date().toISOString();
 
 async function request(path, init = {}, timeout = 30_000) {
@@ -41,6 +48,106 @@ function assert(condition, message) {
   if (!condition) throw new Error(`PROOF FAILED: ${message}`);
 }
 
+function run(command, args, timeout = 60_000) {
+  return new Promise((resolve, reject) => {
+    const child = spawn(command, args, { stdio: ['ignore', 'pipe', 'pipe'] });
+    let stdout = '';
+    let stderr = '';
+    const timer = setTimeout(() => {
+      child.kill('SIGKILL');
+      reject(new Error(`${command} timed out after ${timeout}ms`));
+    }, timeout);
+    child.stdout.on('data', (chunk) => { stdout += chunk; });
+    child.stderr.on('data', (chunk) => { stderr += chunk; });
+    child.on('error', (error) => {
+      clearTimeout(timer);
+      reject(error);
+    });
+    child.on('close', (code) => {
+      clearTimeout(timer);
+      if (code !== 0) reject(new Error(`${command} exited ${code}: ${stderr.slice(-1000)}`));
+      else resolve({ stdout, stderr });
+    });
+  });
+}
+
+async function downloadArtifact(url, destination, timeout = 120_000) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeout);
+  try {
+    const response = await fetch(url, { signal: controller.signal, redirect: 'follow' });
+    if (!response.ok) throw new Error(`artifact download -> ${response.status}`);
+    const bytes = Buffer.from(await response.arrayBuffer());
+    assert(bytes.length > 0, 'downloaded MP4 must be non-empty');
+    await writeFile(destination, bytes);
+    return bytes;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+function sha256(bytes) {
+  return createHash('sha256').update(bytes).digest('hex');
+}
+
+async function inspectMp4(path) {
+  const { stdout } = await run('ffprobe', [
+    '-v', 'error',
+    '-show_streams',
+    '-show_format',
+    '-of', 'json',
+    path,
+  ]);
+  const probe = JSON.parse(stdout);
+  const streams = Array.isArray(probe.streams) ? probe.streams : [];
+  const video = streams.find((stream) => stream.codec_type === 'video');
+  const audio = streams.find((stream) => stream.codec_type === 'audio');
+  assert(video, 'ffprobe must find a video stream');
+  assert(Number(video.width) === 1080, `ffprobe width must be 1080, got ${video.width}`);
+  assert(Number(video.height) === 1920, `ffprobe height must be 1920, got ${video.height}`);
+  const duration = Number(probe.format?.duration ?? video.duration);
+  assert(Number.isFinite(duration) && duration > 0 && duration <= 30.5,
+    `ffprobe duration must be >0 and <=30.5, got ${duration}`);
+
+  const black = await run('ffmpeg', [
+    '-hide_banner', '-nostats', '-i', path,
+    '-vf', 'blackdetect=d=1:pix_th=0.98',
+    '-an', '-f', 'null', '-',
+  ], 120_000);
+  const blackSegments = [...black.stderr.matchAll(/black_start:([0-9.]+) black_end:([0-9.]+) black_duration:([0-9.]+)/g)]
+    .map((match) => ({ start: Number(match[1]), end: Number(match[2]), duration: Number(match[3]) }));
+  const blackDuration = blackSegments.reduce((sum, segment) => sum + segment.duration, 0);
+  assert(blackDuration < Math.max(1, duration * 0.9),
+    `render appears black-frame-only or overwhelmingly black (${blackDuration.toFixed(2)}s of ${duration.toFixed(2)}s)`);
+
+  return {
+    width: Number(video.width),
+    height: Number(video.height),
+    duration_seconds: duration,
+    video_codec: video.codec_name || null,
+    audio_present: Boolean(audio),
+    audio_codec: audio?.codec_name || null,
+    black_duration_seconds: Number(blackDuration.toFixed(3)),
+    black_segments: blackSegments,
+  };
+}
+
+async function loadVisualQa() {
+  assert(visualQaPath, 'YAPPY_CLIPZ_VISUAL_QA_JSON is required for V1 proof');
+  const qa = JSON.parse(await readFile(visualQaPath, 'utf8'));
+  assert(qa?.artifact_reviewed === true, 'visual QA must confirm the rendered artifact was reviewed');
+  assert(qa?.captions_visible === true, 'visual QA must confirm captions are visibly present');
+  assert(qa?.critical_findings_resolved === true, 'visual QA must confirm no unresolved critical findings');
+  assert(typeof qa?.reviewer === 'string' && qa.reviewer.trim(), 'visual QA must identify an independent reviewer');
+  return {
+    artifact_reviewed: true,
+    captions_visible: true,
+    critical_findings_resolved: true,
+    reviewer: qa.reviewer,
+    evidence_ref: qa.evidence_ref || null,
+  };
+}
+
 async function pollJob(jobId) {
   const deadline = Date.now() + timeoutMs;
   const trace = [];
@@ -66,11 +173,13 @@ const evidence = {
   job_id: null,
   output_id: null,
   job_trace: [],
-  output: null,
-  approval: null,
+  artifact_verification: null,
+  visual_qa: null,
+  approval_required: true,
   finished_at: null,
 };
 
+let tempDir = null;
 try {
   const { status: projectStatus, body: project } = await request('/api/v1/projects', {
     method: 'POST',
@@ -127,36 +236,43 @@ try {
   const { body: outputResponse } = await request(`/api/v1/projects/${encodeURIComponent(project.id)}/outputs`);
   const mp4 = outputResponse?.outputs?.find((output) => output.kind === 'mp4' && output.status === 'ready');
   assert(mp4, 'ready MP4 output must exist');
-  assert(mp4.verified === true, 'MP4 output must be verified');
-  assert(mp4.width === 1080, `MP4 width must be 1080, got ${mp4.width}`);
-  assert(mp4.height === 1920, `MP4 height must be 1920, got ${mp4.height}`);
-  assert(typeof mp4.duration_seconds === 'number' && mp4.duration_seconds > 0 && mp4.duration_seconds <= 30.5,
-    `MP4 duration must be >0 and <=30.5, got ${mp4.duration_seconds}`);
-  assert(mp4.checksum_sha256, 'MP4 checksum must be present');
   assert(mp4.url, 'MP4 URL must be present');
+  assert(mp4.checksum_sha256, 'MP4 checksum must be present');
   evidence.output_id = mp4.id;
-  evidence.output = {
-    id: mp4.id,
-    verified: mp4.verified,
-    width: mp4.width,
-    height: mp4.height,
-    duration_seconds: mp4.duration_seconds,
-    checksum_sha256: mp4.checksum_sha256,
-    url: mp4.url,
-  };
 
-  const { status: approvalStatus, body: approved } = await request(`/api/v1/projects/${encodeURIComponent(project.id)}/approve`, {
-    method: 'POST',
-    body: JSON.stringify({ approved_by: 'external-proof-harness', output_id: mp4.id }),
-  });
-  assert(approvalStatus === 200, 'approval must return 200');
-  assert(approved?.status === 'approved', 'project must be approved after explicit approval');
-  evidence.approval = { status: approved.status, approved_by: 'external-proof-harness' };
+  tempDir = await mkdtemp(join(tmpdir(), 'yappy-clipz-proof-'));
+  const artifactPath = join(tempDir, 'output.mp4');
+  const bytes = await downloadArtifact(mp4.url, artifactPath);
+  const computedChecksum = sha256(bytes);
+  assert(computedChecksum.toLowerCase() === String(mp4.checksum_sha256).toLowerCase(),
+    `SHA-256 mismatch: service=${mp4.checksum_sha256} computed=${computedChecksum}`);
+
+  const media = await inspectMp4(artifactPath);
+  assert(mp4.width === media.width, `service width ${mp4.width} disagrees with ffprobe ${media.width}`);
+  assert(mp4.height === media.height, `service height ${mp4.height} disagrees with ffprobe ${media.height}`);
+  assert(Math.abs(Number(mp4.duration_seconds) - media.duration_seconds) <= 0.5,
+    `service duration ${mp4.duration_seconds} disagrees with ffprobe ${media.duration_seconds}`);
+  if (jobRequest.instructions.captions) evidence.visual_qa = await loadVisualQa();
+
+  evidence.artifact_verification = {
+    id: mp4.id,
+    server_verified_claim: mp4.verified === true,
+    checksum_sha256: computedChecksum,
+    bytes: bytes.length,
+    ...media,
+    output_url_redacted: true,
+  };
   evidence.finished_at = new Date().toISOString();
 
-  console.log(JSON.stringify({ result: 'PASS', evidence }, null, 2));
+  console.log(JSON.stringify({
+    result: 'READY_FOR_HUMAN_APPROVAL',
+    next_action: `A human reviewer must inspect output ${mp4.id} and call POST /api/v1/projects/${project.id}/approve. Do not treat this run as production-approved until that separate approval is recorded and independently verified.`,
+    evidence,
+  }, null, 2));
 } catch (error) {
   evidence.finished_at = new Date().toISOString();
   console.error(JSON.stringify({ result: 'FAIL', error: error.message, evidence }, null, 2));
   process.exitCode = 1;
+} finally {
+  if (tempDir) await rm(tempDir, { recursive: true, force: true });
 }
