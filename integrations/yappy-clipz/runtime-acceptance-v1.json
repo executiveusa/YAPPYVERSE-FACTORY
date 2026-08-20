@@ -1,0 +1,81 @@
+{
+  "version": "1.0.0",
+  "service": "YAPPY-CLIPZ",
+  "recipe": "social_reel_v1",
+  "api_version": "v1",
+  "required_routes": [
+    "POST /api/v1/projects",
+    "POST /api/v1/projects/{project_id}/assets",
+    "POST /api/v1/projects/{project_id}/jobs",
+    "GET /api/v1/jobs/{job_id}",
+    "GET /api/v1/projects/{project_id}",
+    "GET /api/v1/projects/{project_id}/outputs",
+    "POST /api/v1/projects/{project_id}/approve"
+  ],
+  "job_lifecycle": {
+    "success_path": ["queued", "analyzing", "editing", "rendering", "qa", "ready", "approved"],
+    "terminal_failures": ["failed", "rejected", "cancelled"],
+    "terminal_states_monotonic": true
+  },
+  "semantics": {
+    "canonical_state": "StudioProject",
+    "renderers_are_adapters": true,
+    "api_and_recipe_versions_independent": true,
+    "heavy_work_outside_request_handler": true,
+    "idempotency_required": true,
+    "tenant_isolation_required": true,
+    "human_approval_required": true,
+    "publishing_in_v1": false,
+    "capcut_in_v1": false
+  },
+  "mp4_gate": {
+    "width": 1080,
+    "height": 1920,
+    "max_duration_seconds": 30.5,
+    "min_duration_seconds_exclusive": 0,
+    "video_stream_required": true,
+    "audio_stream_required_when_selected": true,
+    "sha256_required": true,
+    "ffprobe_required": true,
+    "black_frame_analysis_required": true,
+    "visual_qa_required": true,
+    "unresolved_critical_visual_findings_allowed": false
+  },
+  "required_tests": [
+    "project_create_get",
+    "cross_tenant_project_denied",
+    "asset_registration",
+    "job_create_returns_202",
+    "idempotent_retry_same_job_id",
+    "illegal_state_transition_rejected",
+    "worker_retry_no_duplicate_output",
+    "failed_render_not_ready",
+    "verified_mp4_metadata_persisted",
+    "outputs_returns_verified_record",
+    "approval_before_ready_rejected",
+    "approval_stores_human_identity",
+    "no_publish_side_effect",
+    "bounded_redacted_errors"
+  ],
+  "required_evidence": [
+    "montage_commit_sha",
+    "preview_deployment_id",
+    "project_id",
+    "asset_id",
+    "job_id",
+    "output_id",
+    "idempotency_proof",
+    "job_state_trace",
+    "output_sha256",
+    "ffprobe_summary",
+    "black_frame_analysis",
+    "visual_qa",
+    "human_approval",
+    "ci_green",
+    "rollback"
+  ],
+  "v1_1": {
+    "capcut_adapter": true,
+    "gate": "only_after_v1_passes"
+  }
+}
