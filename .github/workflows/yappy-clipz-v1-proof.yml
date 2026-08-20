@@ -1,0 +1,118 @@
+name: YAPPY-CLIPZ V1 Proof
+
+on:
+  workflow_dispatch:
+    inputs:
+      tenant_id:
+        description: Non-production tenant id for this proof run
+        required: false
+        type: string
+      visual_qa_reviewer:
+        description: Human or independent reviewer identity
+        required: true
+        type: string
+      visual_qa_evidence_ref:
+        description: Reference to screenshot/review evidence (non-secret)
+        required: true
+        type: string
+      captions_visible:
+        description: Reviewer confirms captions are visibly present
+        required: true
+        default: true
+        type: boolean
+      critical_findings_resolved:
+        description: Reviewer confirms no unresolved critical visual findings
+        required: true
+        default: true
+        type: boolean
+
+permissions:
+  contents: read
+
+jobs:
+  external-mp4-proof:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      YAPPY_CLIPZ_BASE_URL: ${{ secrets.YAPPY_CLIPZ_BASE_URL }}
+      YAPPY_CLIPZ_TOKEN: ${{ secrets.YAPPY_CLIPZ_TOKEN }}
+      YAPPY_CLIPZ_SOURCE_URL: ${{ secrets.YAPPY_CLIPZ_SOURCE_URL }}
+      YAPPY_CLIPZ_TIMEOUT_MS: '600000'
+      YAPPY_CLIPZ_POLL_MS: '2000'
+      YAPPY_CLIPZ_TENANT_ID: ${{ inputs.tenant_id }}
+      YAPPY_CLIPZ_VISUAL_QA_JSON: ${{ runner.temp }}/visual-qa.json
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install FFmpeg tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+          ffmpeg -version
+          ffprobe -version
+
+      - name: Validate required secrets
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$YAPPY_CLIPZ_BASE_URL" || { echo 'Missing YAPPY_CLIPZ_BASE_URL secret'; exit 1; }
+          test -n "$YAPPY_CLIPZ_TOKEN" || { echo 'Missing YAPPY_CLIPZ_TOKEN secret'; exit 1; }
+          test -n "$YAPPY_CLIPZ_SOURCE_URL" || { echo 'Missing YAPPY_CLIPZ_SOURCE_URL secret'; exit 1; }
+
+      - name: Build visual QA attestation
+        env:
+          REVIEWER: ${{ inputs.visual_qa_reviewer }}
+          EVIDENCE_REF: ${{ inputs.visual_qa_evidence_ref }}
+          CAPTIONS_VISIBLE: ${{ inputs.captions_visible }}
+          CRITICAL_RESOLVED: ${{ inputs.critical_findings_resolved }}
+        shell: bash
+        run: |
+          node <<'NODE'
+          const { writeFileSync } = require('node:fs');
+          const qa = {
+            artifact_reviewed: true,
+            captions_visible: process.env.CAPTIONS_VISIBLE === 'true',
+            critical_findings_resolved: process.env.CRITICAL_RESOLVED === 'true',
+            reviewer: process.env.REVIEWER,
+            evidence_ref: process.env.EVIDENCE_REF
+          };
+          if (!qa.reviewer || !qa.evidence_ref) throw new Error('Reviewer and evidence_ref are required');
+          writeFileSync(process.env.YAPPY_CLIPZ_VISUAL_QA_JSON, JSON.stringify(qa, null, 2));
+          NODE
+
+      - name: Run independent external proof
+        shell: bash
+        run: node integrations/yappy-clipz/proof-social-reel-v1.mjs | tee "$RUNNER_TEMP/yappy-clipz-proof.json"
+
+      - name: Require ready-for-approval result
+        shell: bash
+        run: |
+          node <<'NODE'
+          const { readFileSync } = require('node:fs');
+          const raw = readFileSync(process.env.RUNNER_TEMP + '/yappy-clipz-proof.json', 'utf8');
+          const proof = JSON.parse(raw);
+          if (proof.result !== 'READY_FOR_HUMAN_APPROVAL') {
+            throw new Error(`Unexpected proof result: ${proof.result}`);
+          }
+          console.log(`Project ${proof.evidence.project_id} / output ${proof.evidence.output_id} is technically verified and awaits a separate approval action.`);
+          NODE
+
+      - name: Upload redacted proof evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: yappy-clipz-v1-proof-${{ github.run_id }}
+          path: ${{ runner.temp }}/yappy-clipz-proof.json
+          retention-days: 14
+          if-no-files-found: error
+
+      - name: Approval boundary
+        run: |
+          echo 'This workflow intentionally does NOT approve or publish the project.'
+          echo 'A separate human must inspect the returned output and call the approval endpoint.'
