@@ -4,7 +4,7 @@
 
 Prove that an external product can call YAPPY-CLIPZ as a service and receive one verified vertical MP4 without importing Montage internals.
 
-**V1 ends at verified MP4 + explicit human approval. CapCut is V1.1 and is not part of the V1 production gate.**
+**V1 ends at independently verified MP4 + explicit human approval. CapCut is V1.1 and is not part of the V1 production gate.**
 
 ## Preconditions
 
@@ -12,10 +12,12 @@ Prove that an external product can call YAPPY-CLIPZ as a service and receive one
 - `YAPPY_CLIPZ_BASE_URL` configured in the client runtime.
 - `YAPPY_CLIPZ_TOKEN` stored as a server-side secret.
 - `YAPPY_CLIPZ_SOURCE_URL` points to one real source video through an accessible signed URL.
+- `ffprobe` and `ffmpeg` are installed where the proof harness runs.
+- Independent visual-QA evidence exists as JSON for the exact returned artifact.
 - No publishing integration enabled.
 - Service job execution is durable and separate from ordinary request handling.
 
-## Automated proof harness
+## Automated technical proof harness
 
 Run:
 
@@ -23,6 +25,7 @@ Run:
 YAPPY_CLIPZ_BASE_URL="https://<preview-host>" \
 YAPPY_CLIPZ_TOKEN="<server-secret>" \
 YAPPY_CLIPZ_SOURCE_URL="<signed-source-video-url>" \
+YAPPY_CLIPZ_VISUAL_QA_JSON="./evidence/visual-qa.json" \
 node integrations/yappy-clipz/proof-social-reel-v1.mjs
 ```
 
@@ -36,7 +39,23 @@ YAPPY_CLIPZ_POLL_MS="2000"
 
 The harness intentionally submits the same job request twice with the same idempotency key. A compliant service must return the same job ID rather than duplicate production work.
 
-Never commit tokens or signed source URLs.
+The harness then downloads the returned MP4 transiently, recomputes SHA-256, runs local `ffprobe`, verifies video dimensions and duration, checks audio-stream presence, and runs an FFmpeg black-frame check. It does **not** trust `verified=true` by itself.
+
+The harness never saves or prints the signed output URL. It removes the downloaded artifact after verification.
+
+A compliant visual-QA JSON file must identify an independent reviewer and confirm:
+
+```json
+{
+  "artifact_reviewed": true,
+  "captions_visible": true,
+  "critical_findings_resolved": true,
+  "reviewer": "<independent-reviewer-id>",
+  "evidence_ref": "<non-secret-reference>"
+}
+```
+
+Never commit tokens, signed source URLs, or signed output URLs.
 
 ## Test payload
 
@@ -71,7 +90,7 @@ Create a project for a non-production tenant, register one source video, then su
 - Repeating the same request with the same idempotency key returns the same job ID.
 - Job can be polled without importing Montage internals.
 - Job state transitions are recorded and retrievable.
-- Terminal success state is `ready` or `approved`.
+- Terminal technical-success state is `ready` or `approved`.
 - Failures expose a bounded error object without secrets.
 - In-flight client requests obey their deadline/abort signal.
 - Worker retry/attempt metadata does not create duplicate outputs.
@@ -83,33 +102,49 @@ Create a project for a non-production tenant, register one source video, then su
 - Every render is derived from canonical edit decisions and registered assets.
 - Renderer/worker failure cannot corrupt the last verified canonical state.
 
-### MP4
+### MP4 — independently verified
 
-- Output record has `kind=mp4`, `status=ready`, `verified=true`.
+- Output record has `kind=mp4`, `status=ready`.
+- The artifact URL can be downloaded by the proof runner.
+- Downloaded artifact is non-empty.
+- Recomputed SHA-256 exactly matches the service-recorded checksum.
+- `ffprobe` can decode the file and finds a video stream.
 - Width = 1080.
 - Height = 1920.
 - Duration is > 0 and <= 30.5 seconds.
-- File is decodable by FFmpeg/ffprobe.
-- Video stream exists.
-- Audio stream exists when the recipe selected source/bed audio.
-- Captions are visually present when `captions=true`.
-- No black-frame-only, zero-byte, or corrupt output.
-- SHA-256 checksum is recorded before `ready`.
-- Technical verification evidence is retrievable.
+- Audio-stream presence is recorded.
+- FFmpeg black-frame analysis does not indicate a black-frame-only render.
+- Captions are visually confirmed when `captions=true` by separate visual QA.
+- Service-side `verified=true` is recorded only as a claim; it is not sufficient proof by itself.
 
 ### Editorial review
 
 - A technically valid MP4 alone is not enough.
 - The Montage watch loop must have no unresolved critical visual-QA findings.
+- Independent visual-QA evidence must identify the reviewer.
 - Captions/titles are inside safe areas.
 - Source/support visuals are semantically relevant.
 - The final review render and its review evidence are both retrievable.
 
-### Approval
+### Human approval — separate step
 
+The automated technical harness must **stop before approval** and return `READY_FOR_HUMAN_APPROVAL`.
+
+A human reviewer must then inspect the actual reel and explicitly call:
+
+```http
+POST /api/v1/projects/{project_id}/approve
+```
+
+with their own identity and the reviewed output ID.
+
+After that action, approval must be independently verified from service state/evidence before V1 is declared passed.
+
+- No harness or builder may approve on behalf of the human.
 - No publish action occurs automatically.
 - `POST /approve` records the approving human identity.
 - Rejection or failed QA cannot be represented as approved.
+- Production-ready status requires both the automated proof bundle and the separate approval record.
 
 ## Evidence bundle
 
@@ -125,13 +160,14 @@ Save the following IDs/artifacts with the test run:
 - attempt/retry metadata
 - output ID
 - request timestamps
-- output SHA-256 checksum
+- recomputed output SHA-256 checksum
 - ffprobe summary
-- render-review/visual-QA evidence
+- black-frame analysis summary
+- render-review/visual-QA evidence reference
 - screenshot of rendered reel
-- approval record
+- separate human approval record
 
-Never save bearer tokens or signed storage credentials in the evidence bundle.
+Never save bearer tokens, signed source URLs, or signed output URLs in the evidence bundle.
 
 ## V1.1 — CapCut adapter proof
 
