@@ -1,0 +1,75 @@
+{
+  "schemaVersion": 1,
+  "product": "Yappyverse",
+  "executionPolicy": "hermes-first-proof",
+  "characters": [
+    {
+      "id": "hermes",
+      "displayName": "Hermes",
+      "role": "orchestrator",
+      "class": "Grinion",
+      "runtime": {
+        "kind": "acp",
+        "providerId": "hermes-acp",
+        "command": "hermes-acp"
+      },
+      "state": "proof-required"
+    },
+    {
+      "id": "pi",
+      "displayName": "Pi",
+      "role": "personal-assistant",
+      "class": "Grinion",
+      "runtime": null,
+      "state": "identity-only"
+    },
+    {
+      "id": "cosmos",
+      "displayName": "Cosmos",
+      "role": "engineering-coordination",
+      "class": "Grinion",
+      "runtime": null,
+      "state": "identity-only"
+    },
+    {
+      "id": "tars",
+      "displayName": "TARS",
+      "role": "experimental-fleet-member",
+      "class": "Grinion",
+      "runtime": null,
+      "state": "identity-only"
+    },
+    {
+      "id": "jarvis",
+      "displayName": "Jarvis",
+      "role": "experimental-fleet-member",
+      "class": "Grinion",
+      "runtime": null,
+      "state": "identity-only"
+    },
+    {
+      "id": "lightning",
+      "displayName": "Lightning",
+      "role": "watcher-improvement",
+      "class": "Grinion",
+      "runtime": null,
+      "state": "identity-only"
+    },
+    {
+      "id": "maxx",
+      "displayName": "Agent Max / MAXX",
+      "role": "business-operator",
+      "class": "Grinion",
+      "runtime": null,
+      "state": "identity-only"
+    }
+  ],
+  "excludedFromCore": ["fanni"],
+  "rules": [
+    "Character identity is not the runtime.",
+    "Runtime is not the model.",
+    "Harness is not the character.",
+    "Only Hermes may be execution-wired in V1 proof slice.",
+    "Future runtime/model swaps must not require repainting the character identity."
+  ]
+}
