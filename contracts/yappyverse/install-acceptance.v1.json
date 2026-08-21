@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://yappyverse.local/contracts/install-acceptance.v1.json",
+  "title": "Yappyverse V1 Install Acceptance Receipt",
+  "type": "object",
+  "required": ["schemaVersion", "product", "slice", "capturedAt", "runtime", "gates", "acceptance"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "product": { "const": "Yappyverse" },
+    "slice": { "const": "Hermes-first V1" },
+    "capturedAt": { "type": "string" },
+    "runtime": {
+      "type": "object",
+      "required": ["repoPath", "origin", "head", "cleanWorktree"],
+      "properties": {
+        "repoPath": { "type": "string" },
+        "origin": { "type": "string" },
+        "branch": { "type": "string" },
+        "head": { "type": "string", "minLength": 7 },
+        "cleanWorktree": { "type": "boolean" }
+      }
+    },
+    "gates": {
+      "type": "object",
+      "required": ["justCi", "hermesRoundTrip", "bundle"],
+      "properties": {
+        "justCi": { "enum": ["pass", "fail"] },
+        "hermesRoundTrip": { "enum": ["pass", "fail"] },
+        "bundle": { "enum": ["pass", "fail", "not-run"] }
+      }
+    },
+    "acceptance": {
+      "type": "object",
+      "required": ["mergeReady", "installReady"],
+      "properties": {
+        "mergeReady": { "type": "boolean" },
+        "installReady": { "type": "boolean" }
+      }
+    },
+    "notes": { "type": "string" }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": { "acceptance": { "properties": { "mergeReady": { "const": true } } } }
+      },
+      "then": {
+        "properties": {
+          "gates": {
+            "properties": {
+              "justCi": { "const": "pass" },
+              "hermesRoundTrip": { "const": "pass" }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": { "acceptance": { "properties": { "installReady": { "const": true } } } }
+      },
+      "then": {
+        "properties": {
+          "gates": {
+            "properties": {
+              "justCi": { "const": "pass" },
+              "hermesRoundTrip": { "const": "pass" },
+              "bundle": { "const": "pass" }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "additionalProperties": false
+}
