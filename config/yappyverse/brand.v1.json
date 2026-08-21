@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "product": {
+    "name": "Yappyverse",
+    "shortName": "Yappyverse",
+    "agentNounSingular": "Grinion",
+    "agentNounPlural": "Grinions"
+  },
+  "distribution": {
+    "strategy": "skin-only",
+    "baseRuntime": "executiveusa/pauli-berd",
+    "preserveRuntimePlumbing": true
+  },
+  "surfacePolicy": {
+    "allowed": [
+      "product-name",
+      "logo",
+      "app-icon",
+      "colors",
+      "typography-tokens",
+      "visible-copy",
+      "splash-screen",
+      "about-screen",
+      "agent-avatar",
+      "agent-display-name"
+    ],
+    "frozen": [
+      "goose-acp-transport",
+      "auth",
+      "database",
+      "model-routing",
+      "multiplayer",
+      "deepseek-harness",
+      "new-backend",
+      "3d-runtime"
+    ]
+  },
+  "principle": "Keep the plumbing; change the paint."
+}
