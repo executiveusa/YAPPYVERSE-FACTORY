@@ -1,0 +1,37 @@
+version: 1
+mode: multiplayer-business-os
+constitution:
+  - EMERALD_TABLETS.md
+  - AGENTS.md
+  - CLAUDE.md
+system_prompt: ICM/multiplayer/MULTIPLAYER_SYSTEM_PROMPT.md
+team_graph: ICM/multiplayer/TEAM_GRAPH.json
+credit_workflow: ICM/multiplayer/credit/CREDIT_WORKFLOW.md
+client_state_contract: ICM/multiplayer/CLIENT_STATE_CONTRACT.md
+interaction_model:
+  shell: YAPPYVERSE / BERD-derived multiplayer interface
+  principle: avatars map to real roles, permissions, projects, tasks, state, and receipts
+icm:
+  stages:
+    - INPUT
+    - PROCESS
+    - OUTPUT
+    - GATE
+    - RECEIPT
+  gates:
+    - PASS
+    - BLOCK
+rules:
+  remote_first: true
+  evidence_states:
+    - VERIFIED
+    - CLIENT_STATED
+    - INFERRED
+    - UNKNOWN
+  builder_self_approval: false
+  owner_question_budget: 6
+  irreversible_action_requires_human_approval: true
+  financial_commitment_requires_human_approval: true
+  secrets_in_repo: false
+  one_binding_constraint_first: true
+  growth_valve_last: true
