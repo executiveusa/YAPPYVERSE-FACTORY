@@ -6,6 +6,7 @@ constitution:
   - CLAUDE.md
 system_prompt: ICM/multiplayer/MULTIPLAYER_SYSTEM_PROMPT.md
 team_graph: ICM/multiplayer/TEAM_GRAPH.json
+hermes_bridge: ICM/multiplayer/HERMES_BRIDGE.md
 credit_workflow: ICM/multiplayer/credit/CREDIT_WORKFLOW.md
 client_state_contract: ICM/multiplayer/CLIENT_STATE_CONTRACT.md
 interaction_model:
