@@ -2,7 +2,7 @@
   "version": 1,
   "mode": "multiplayer-business-os",
   "privacy_model": {
-    "background_orchestrators": ["Jeremy", "Bamboo"],
+    "background_orchestrators": ["Jeremy", "Bambú"],
     "public_positioning": "white-label/back-office orchestration where appropriate",
     "constraints": [
       "No impersonation",
@@ -18,7 +18,9 @@
       "technical_profile": "operator"
     },
     {
-      "name": "Bamboo",
+      "name": "Bambú",
+      "slug": "bambu",
+      "aliases": ["Bambu", "Bamboo"],
       "role": "AI orchestrator",
       "lanes": ["shared context", "agent routing", "diagnostics", "proof design", "receipts"],
       "technical_profile": "AI"
@@ -38,7 +40,7 @@
       "website": "https://maxdigitalmedia.com"
     },
     {
-      "name": "Stavare",
+      "name": "Stavarai",
       "role": "Posta Tees operator",
       "lanes": ["merch", "print on demand", "apparel systems", "creative commerce"],
       "company": "Posta Tees",
@@ -55,8 +57,8 @@
       "name": "Yvette",
       "role": "Mexico / Latin America opportunity operator",
       "lanes": ["local opportunity discovery", "Mexico market", "Latin America deployment", "client relationships"],
-      "company": "Coopery Media",
-      "website": "https://cooperymedia.com",
+      "company": "Kupuri Media",
+      "website_status": "UNKNOWN",
       "regions": ["Puerto Vallarta", "Mexico City", "Monterrey", "Latin America"]
     }
   ],
@@ -72,7 +74,7 @@
     },
     {
       "name": "Posta Tees",
-      "operator": "Stavare",
+      "operator": "Stavarai",
       "purpose": "merch and print-on-demand systems lab"
     },
     {
@@ -81,7 +83,7 @@
       "purpose": "creative and social-purpose operating lane"
     },
     {
-      "name": "Coopery Media",
+      "name": "Kupuri Media",
       "operator": "Yvette",
       "purpose": "Mexico and Latin America opportunity lane"
     },
