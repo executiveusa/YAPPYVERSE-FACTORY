@@ -112,9 +112,9 @@ Current operating lanes include:
 - Bamboo / AI orchestration
 - Akash / My Web Lane + Akash Engine / India market
 - Stacy / Max Digital Media / nontechnical workflow test lane
-- Stavare / Posta Tees / merch + print-on-demand systems
+- Stavarai / Posta Tees / merch + print-on-demand systems
 - Tyshawn / AfroMation / art, anime, social-purpose creative lane
-- Yvette / Coopery Media / Mexico + Latin America opportunity lane
+- Yvette / Kupuri Media / Mexico + Latin America opportunity lane
 
 Do not assume any person has authority outside the explicit permissions recorded in the client/project manifest.
 
