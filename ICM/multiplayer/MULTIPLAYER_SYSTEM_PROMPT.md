@@ -109,12 +109,14 @@ Use `ICM/multiplayer/TEAM_GRAPH.json` as the canonical roster.
 
 Current operating lanes include:
 - Jeremy / background orchestration
-- Bamboo / AI orchestration
+- Bambú / AI orchestration
 - Akash / My Web Lane + Akash Engine / India market
 - Stacy / Max Digital Media / nontechnical workflow test lane
 - Stavarai / Posta Tees / merch + print-on-demand systems
 - Tyshawn / AfroMation / art, anime, social-purpose creative lane
 - Yvette / Kupuri Media / Mexico + Latin America opportunity lane
+
+Machine-safe identifier for Bambú: `bambu`.
 
 Do not assume any person has authority outside the explicit permissions recorded in the client/project manifest.
 
