@@ -28,14 +28,19 @@ export class FileStore {
     catch (error) { if (error.code === 'ENOENT') return null; throw error; }
   }
 
-  async findByRequestId(requestId) {
+  async listJobs() {
     const files = await readdir(this.jobsDir);
+    const jobs = [];
     for (const file of files) {
       if (!file.endsWith('.json')) continue;
-      const job = JSON.parse(await readFile(path.join(this.jobsDir, file), 'utf8'));
-      if (job.request_id === requestId) return job;
+      jobs.push(JSON.parse(await readFile(path.join(this.jobsDir, file), 'utf8')));
     }
-    return null;
+    return jobs.sort((a, b) => String(a.created_at).localeCompare(String(b.created_at)));
+  }
+
+  async findByRequestId(requestId) {
+    const jobs = await this.listJobs();
+    return jobs.find((job) => job.request_id === requestId) ?? null;
   }
 
   async putEvidence(jobId, evidence) {
