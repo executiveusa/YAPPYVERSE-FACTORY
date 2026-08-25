@@ -22,7 +22,12 @@ async function body(req) {
 export const server = http.createServer(async (req, res) => {
   try {
     const url = new URL(req.url, 'http://localhost');
-    if (req.method === 'GET' && url.pathname === '/healthz') return json(res, 200, { ok: true, service: 'pauli-factory-demo' });
+    if (req.method === 'GET' && url.pathname === '/healthz') {
+      const pipeline = await factory.pipelineStatus();
+      return json(res, 200, { ok: true, service: 'pauli-factory-demo', pipeline: { max_active: pipeline.max_active, active_count: pipeline.active_count, queued_count: pipeline.queued_count } });
+    }
+    if (req.method === 'GET' && url.pathname === '/pipeline') return json(res, 200, await factory.pipelineStatus());
+    if (req.method === 'GET' && url.pathname === '/jobs') return json(res, 200, { jobs: await factory.listJobs() });
     if (req.method === 'POST' && url.pathname === '/jobs') {
       const result = await factory.createJob(await body(req));
       return json(res, result.idempotent_replay ? 200 : 202, result);
