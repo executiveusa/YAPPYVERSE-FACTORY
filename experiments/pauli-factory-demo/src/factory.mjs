@@ -7,14 +7,28 @@ const TERMINAL = new Set(['COMPLETE', 'FAILED', 'BLOCKED', 'CANCELLED']);
 const now = () => new Date().toISOString();
 
 export class Factory {
-  constructor({ runtimeRoot, adapter = new MockOrcaAdapter() }) {
+  constructor({ runtimeRoot, adapter = new MockOrcaAdapter(), maxActive = Number(process.env.FACTORY_MAX_ACTIVE ?? 5) }) {
     this.store = new FileStore(runtimeRoot);
     this.leases = new LeaseManager();
     this.adapter = adapter;
     this.controllers = new Map();
+    this.maxActive = Number.isFinite(maxActive) && maxActive > 0 ? Math.floor(maxActive) : 5;
+    this.dispatching = false;
   }
 
-  async init() { await this.store.init(); }
+  async init() {
+    await this.store.init();
+    const jobs = await this.store.listJobs();
+    for (const job of jobs) {
+      if (TERMINAL.has(job.state)) continue;
+      job.state = 'QUEUED';
+      job.updated_at = now();
+      job.history ??= [];
+      job.history.push({ state: 'QUEUED', at: job.updated_at, reason: 'factory restart recovery' });
+      await this.store.putJob(job);
+    }
+    await this.dispatchQueued();
+  }
 
   validate(input) {
     for (const field of ['request_id', 'repository', 'outcome']) {
@@ -28,7 +42,7 @@ export class Factory {
   async createJob(input) {
     this.validate(input);
     const existing = await this.store.findByRequestId(input.request_id);
-    if (existing) return { job: existing, idempotent_replay: true };
+    if (existing) return { job: existing, idempotent_replay: true, queued: existing.state === 'QUEUED' };
 
     const jobId = `job_${crypto.randomUUID()}`;
     const job = {
@@ -41,22 +55,40 @@ export class Factory {
       budget: { runtime_minutes: 30, max_cost_usd: 5, workers: 2, retries: 1, ...(input.budget ?? {}) },
       simulate_failure: input.simulate_failure ?? null,
       simulate_delay_ms: input.simulate_delay_ms ?? 80,
-      state: 'RECEIVED',
+      state: 'QUEUED',
       created_at: now(),
       updated_at: now(),
-      history: [{ state: 'RECEIVED', at: now() }],
+      history: [{ state: 'QUEUED', at: now() }],
       cancel_requested: false
     };
     await this.store.putJob(job);
-    const controller = new AbortController();
-    this.controllers.set(jobId, controller);
-    setImmediate(() => this.run(jobId, controller.signal).catch(() => {}));
-    return { job, idempotent_replay: false };
+    await this.dispatchQueued();
+    const fresh = await this.store.getJob(jobId);
+    return { job: fresh, idempotent_replay: false, queued: fresh?.state === 'QUEUED' };
+  }
+
+  async dispatchQueued() {
+    if (this.dispatching) return;
+    this.dispatching = true;
+    try {
+      const jobs = await this.store.listJobs();
+      const queued = jobs.filter((job) => job.state === 'QUEUED' && !job.cancel_requested);
+      for (const job of queued) {
+        if (this.controllers.size >= this.maxActive) break;
+        if (this.controllers.has(job.job_id)) continue;
+        const controller = new AbortController();
+        this.controllers.set(job.job_id, controller);
+        setImmediate(() => this.run(job.job_id, controller.signal).catch(() => {}));
+      }
+    } finally {
+      this.dispatching = false;
+    }
   }
 
   async transition(job, state, extra = {}) {
     job.state = state;
     job.updated_at = now();
+    job.history ??= [];
     job.history.push({ state, at: job.updated_at });
     Object.assign(job, extra);
     await this.store.putJob(job);
@@ -137,6 +169,7 @@ export class Factory {
     } finally {
       this.leases.release(lockKey, jobId);
       this.controllers.delete(jobId);
+      setImmediate(() => this.dispatchQueued().catch(() => {}));
     }
   }
 
@@ -164,10 +197,30 @@ export class Factory {
 
   async getJob(jobId) { return this.store.getJob(jobId); }
 
+  async listJobs() { return this.store.listJobs(); }
+
+  async pipelineStatus() {
+    const jobs = await this.store.listJobs();
+    const activeIds = new Set(this.controllers.keys());
+    return {
+      max_active: this.maxActive,
+      active_count: activeIds.size,
+      queued_count: jobs.filter((job) => job.state === 'QUEUED').length,
+      active: jobs.filter((job) => activeIds.has(job.job_id)),
+      queued: jobs.filter((job) => job.state === 'QUEUED'),
+      terminal: jobs.filter((job) => TERMINAL.has(job.state)).slice(-20)
+    };
+  }
+
   async cancelJob(jobId) {
     const job = await this.store.getJob(jobId);
     if (!job) return null;
     if (TERMINAL.has(job.state)) return job;
+    if (job.state === 'QUEUED' && !this.controllers.has(jobId)) {
+      job.cancel_requested = true;
+      await this.transition(job, 'CANCELLED', { finished_at: now() });
+      return job;
+    }
     job.cancel_requested = true;
     job.updated_at = now();
     await this.store.putJob(job);
