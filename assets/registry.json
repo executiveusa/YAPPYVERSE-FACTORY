@@ -1,8 +1,17 @@
 {
-  "version": "1.0.0",
+  "version": "1.1.0",
   "naming_convention": "{canonical_id}_{category}_{variant}_v{NNN}.{ext}",
   "label_format": "{canonical_id}:{category}:{variant}:v{N}",
-  "categories": ["reference", "mesh", "texture", "rig", "animation", "render", "nft", "audio"],
+  "categories": [
+    "reference",
+    "mesh",
+    "texture",
+    "rig",
+    "animation",
+    "render",
+    "nft",
+    "audio"
+  ],
   "characters": {
     "pauli": {
       "display_name": "Pauli",
@@ -149,6 +158,122 @@
       "canonical_id": "the_key",
       "status": "queued",
       "source_folder": "E:\\ACTIVE PROJECTS-PIPELINE\\ACTIVE PROJECTS-PIPELINE\\YAPPYVERSE\\IMAGES OF YAPPYVERSE\\YAPPYVERSEI-MAGE FILES MASTER\\THE KEY"
+    },
+    "paul_e": {
+      "display_name": "Paul-E",
+      "canonical_id": "paul_e",
+      "status": "wiki_draft_pending_approval",
+      "wiki": "wiki/paul_e.md",
+      "source": "ChatGPT YAPPYVERSE project chat extraction 2026-09-12"
+    },
+    "el_papo": {
+      "display_name": "El Papo",
+      "canonical_id": "el_papo",
+      "status": "wiki_draft_pending_approval",
+      "wiki": "wiki/el_papo.md",
+      "source": "ChatGPT YAPPYVERSE project chat extraction 2026-09-12"
+    },
+    "sun_guardian": {
+      "display_name": "Sun Guardian",
+      "canonical_id": "sun_guardian",
+      "status": "wiki_draft_pending_approval",
+      "wiki": "wiki/sun_guardian.md",
+      "source": "ChatGPT YAPPYVERSE project chat extraction 2026-09-12",
+      "images": [
+        "assets/images/sun-guardian-bgremoved.png"
+      ],
+      "asset_count": 1
+    },
+    "rhah_duo": {
+      "display_name": "Ezri & Rhah (Duo)",
+      "canonical_id": "rhah_duo",
+      "status": "wiki_draft_pending_approval",
+      "wiki": "wiki/rhah_duo.md",
+      "source": "ChatGPT YAPPYVERSE project chat extraction 2026-09-12"
+    },
+    "tiffany_felipe": {
+      "display_name": "Tiffany Felipe",
+      "canonical_id": "tiffany_felipe",
+      "status": "wiki_draft_pending_approval",
+      "wiki": "wiki/tiffany_felipe.md",
+      "source": "ChatGPT YAPPYVERSE project chat extraction 2026-09-12"
+    },
+    "capitan_cubano": {
+      "display_name": "Capitan Cubano",
+      "canonical_id": "capitan_cubano",
+      "status": "wiki_draft_pending_approval",
+      "wiki": "wiki/capitan_cubano.md",
+      "source": "ChatGPT YAPPYVERSE project chat extraction 2026-09-12"
+    },
+    "raven_narrator": {
+      "display_name": "The Raven (Narrator / Black Witness)",
+      "canonical_id": "raven_narrator",
+      "status": "wiki_draft_pending_approval",
+      "wiki": "wiki/raven_narrator.md",
+      "source": "ChatGPT YAPPYVERSE project chat extraction 2026-09-12"
+    },
+    "dual": {
+      "display_name": "Duel / DUAL",
+      "canonical_id": "dual",
+      "status": "wiki_draft_pending_approval",
+      "wiki": "wiki/dual.md",
+      "source": "ChatGPT YAPPYVERSE project chat extraction 2026-09-12"
+    },
+    "los_garobos": {
+      "display_name": "Los Garobos",
+      "canonical_id": "los_garobos",
+      "status": "wiki_draft_pending_approval",
+      "wiki": "wiki/los_garobos.md",
+      "source": "ChatGPT YAPPYVERSE project chat extraction 2026-09-12"
+    },
+    "snowed_in_sid": {
+      "display_name": "Snowed-In Sid",
+      "canonical_id": "snowed_in_sid",
+      "status": "wiki_draft_pending_approval",
+      "wiki": "wiki/snowed_in_sid.md",
+      "source": "ChatGPT YAPPYVERSE project chat extraction 2026-09-12"
+    },
+    "taishan": {
+      "display_name": "Taishan (Giga Strays)",
+      "canonical_id": "taishan",
+      "status": "wiki_draft_pending_approval",
+      "wiki": "wiki/taishan.md",
+      "source": "ChatGPT YAPPYVERSE project chat extraction 2026-09-12"
+    },
+    "capitan_duende": {
+      "display_name": "Capitan Duende",
+      "canonical_id": "capitan_duende",
+      "status": "wiki_draft_pending_approval",
+      "wiki": "wiki/capitan_duende.md",
+      "source": "ChatGPT YAPPYVERSE project chat extraction 2026-09-12",
+      "images": [
+        "assets/images/capitan-duende-photo-1.png",
+        "assets/images/capitan-duende-photo-2.png",
+        "assets/images/capitan-duende-photo-3.png",
+        "assets/images/capitan-duende-generated-1.png"
+      ],
+      "asset_count": 4
+    },
+    "archon_x": {
+      "display_name": "Archon X",
+      "canonical_id": "archon_x",
+      "status": "wiki_draft_pending_approval",
+      "wiki": "wiki/archon_x.md",
+      "source": "ChatGPT YAPPYVERSE project chat extraction 2026-09-12"
+    },
+    "birmingham_roller": {
+      "display_name": "Birmingham Roller & T",
+      "canonical_id": "birmingham_roller",
+      "status": "wiki_draft_pending_approval",
+      "wiki": "wiki/birmingham_roller.md",
+      "source": "ChatGPT YAPPYVERSE project chat extraction 2026-09-12"
+    },
+    "los_toxicos": {
+      "display_name": "Los Toxicos (group)",
+      "canonical_id": "los_toxicos",
+      "status": "wiki_draft_pending_approval",
+      "wiki": "wiki/los_toxicos.md",
+      "source": "ChatGPT YAPPYVERSE project chat extraction 2026-09-12"
     }
   }
 }
