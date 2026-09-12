@@ -1,5 +1,5 @@
 {
-  "version": "1.1.0",
+  "version": "1.2.0",
   "naming_convention": "{canonical_id}_{category}_{variant}_v{NNN}.{ext}",
   "label_format": "{canonical_id}:{category}:{variant}:v{N}",
   "categories": [
@@ -72,10 +72,10 @@
       "status": "queued"
     },
     "bambu_baggins": {
-      "display_name": "Bambú Baggins",
+      "display_name": "Bamb\u00fa Baggins",
       "canonical_id": "bambu_baggins",
       "status": "queued",
-      "source_folder": "E:\\ACTIVE PROJECTS-PIPELINE\\ACTIVE PROJECTS-PIPELINE\\YAPPYVERSE\\IMAGES OF YAPPYVERSE\\YAPPYVERSEI-MAGE FILES MASTER\\Bambú Baggins"
+      "source_folder": "E:\\ACTIVE PROJECTS-PIPELINE\\ACTIVE PROJECTS-PIPELINE\\YAPPYVERSE\\IMAGES OF YAPPYVERSE\\YAPPYVERSEI-MAGE FILES MASTER\\Bamb\u00fa Baggins"
     },
     "vontai_banks": {
       "display_name": "Vontai Banks",
@@ -138,7 +138,7 @@
     "poo_racho": {
       "display_name": "Poo-Racho",
       "canonical_id": "poo_racho",
-      "status": "queued",
+      "status": "wiki_draft_pending_approval",
       "source_folder": "E:\\ACTIVE PROJECTS-PIPELINE\\ACTIVE PROJECTS-PIPELINE\\YAPPYVERSE\\IMAGES OF YAPPYVERSE\\YAPPYVERSEI-MAGE FILES MASTER\\Poo-RACHO"
     },
     "wall_e": {
@@ -196,7 +196,8 @@
       "canonical_id": "tiffany_felipe",
       "status": "wiki_draft_pending_approval",
       "wiki": "wiki/tiffany_felipe.md",
-      "source": "ChatGPT YAPPYVERSE project chat extraction 2026-09-12"
+      "source": "ChatGPT YAPPYVERSE project chat extraction 2026-09-12",
+      "asset_count": 1
     },
     "capitan_cubano": {
       "display_name": "Capitan Cubano",
@@ -274,6 +275,63 @@
       "status": "wiki_draft_pending_approval",
       "wiki": "wiki/los_toxicos.md",
       "source": "ChatGPT YAPPYVERSE project chat extraction 2026-09-12"
+    },
+    "la_mariposa_cheesmosa": {
+      "display_name": "La Mariposa Cheesmosa",
+      "canonical_id": "la_mariposa_cheesmosa",
+      "status": "wiki_draft_pending_approval"
+    },
+    "stackman": {
+      "display_name": "Stackman",
+      "canonical_id": "stackman",
+      "status": "wiki_draft_pending_approval"
+    },
+    "kaffa": {
+      "display_name": "Kaffa",
+      "canonical_id": "kaffa",
+      "status": "wiki_draft_pending_approval"
+    },
+    "tin_man": {
+      "display_name": "Tin Man (Black America)",
+      "canonical_id": "tin_man",
+      "status": "wiki_draft_pending_approval"
+    },
+    "thin_man": {
+      "display_name": "Thin Man",
+      "canonical_id": "thin_man",
+      "status": "wiki_draft_pending_approval"
+    },
+    "the_owl": {
+      "display_name": "The Owl",
+      "canonical_id": "the_owl",
+      "status": "wiki_draft_pending_approval"
+    },
+    "airy_potter": {
+      "display_name": "Airy Potter",
+      "canonical_id": "airy_potter",
+      "status": "wiki_draft_pending_approval"
+    },
+    "wilson_charlie": {
+      "display_name": "Wilson Charlie",
+      "canonical_id": "wilson_charlie",
+      "status": "wiki_draft_pending_approval"
+    },
+    "bounce": {
+      "display_name": "Bounce",
+      "canonical_id": "bounce",
+      "status": "wiki_draft_pending_approval"
+    },
+    "grinyons": {
+      "display_name": "Grinyons",
+      "canonical_id": "grinyons",
+      "status": "wiki_draft_pending_approval",
+      "asset_count": 8
+    },
+    "ice_kenezzer": {
+      "display_name": "Coach Ice Kenezzer",
+      "canonical_id": "ice_kenezzer",
+      "status": "wiki_draft_pending_approval",
+      "asset_count": 9
     }
   }
 }
