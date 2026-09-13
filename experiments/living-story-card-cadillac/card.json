@@ -1,0 +1,32 @@
+{
+  "id": "wp-evidence-09-cadillac",
+  "source_asset": "../../assets/pauli/reference/pauli_reference_cadillac_v001.jpg",
+  "canon_status": "approved-reference",
+  "focal_point": { "x": 0.58, "y": 0.56 },
+  "mode": "LIVE_STILL",
+  "depth_layers": {
+    "base": "required",
+    "mid": "duplicate-mask",
+    "near": "duplicate-mask"
+  },
+  "effects": ["rain", "chrome-glint"],
+  "interaction": {
+    "type": "inspect",
+    "target": "vehicle-match"
+  },
+  "payoff": {
+    "type": "evidence",
+    "value": "positive-lead"
+  },
+  "mobile": {
+    "primary_viewport": "390x844",
+    "pan": "scroll-controlled-horizontal-discovery",
+    "fallback": "single-image-plus-evidence-button"
+  },
+  "reduced_motion": "required",
+  "performance": {
+    "webgl_required": false,
+    "video_required": false,
+    "external_runtime_dependencies": []
+  }
+}

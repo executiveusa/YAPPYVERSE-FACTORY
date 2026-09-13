@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Living Story Card — Cadillac Evidence</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #050505;
+      --ink: #f3f0e8;
+      --muted: #8b8b86;
+      --line: rgba(255,255,255,.15);
+      --accent: #a9c8e8;
+      --rx: 0deg;
+      --ry: 0deg;
+      --pan: 0;
+      --scroll: 0;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin:0; min-height:100%; background:var(--bg); color:var(--ink); font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    body { overflow-x:hidden; }
+    button { font:inherit; }
+    .page { min-height:180vh; background:radial-gradient(circle at 50% 0%, rgba(255,255,255,.035), transparent 28%); }
+    .sticky { min-height:100vh; position:sticky; top:0; display:grid; place-items:center; padding:18px; overflow:hidden; }
+    .card-shell { width:min(1180px, 100%); perspective:1400px; }
+    .card {
+      position:relative;
+      aspect-ratio:16/9;
+      min-height:420px;
+      overflow:hidden;
+      border:1px solid var(--line);
+      background:#000;
+      transform-style:preserve-3d;
+      transform:rotateX(var(--rx)) rotateY(var(--ry)) scale(calc(1 + var(--scroll) * .02));
+      transition:transform .18s ease-out;
+      box-shadow:0 32px 90px rgba(0,0,0,.55);
+    }
+    .layer { position:absolute; inset:-4%; pointer-events:none; transform:translate3d(0,0,0); will-change:transform, opacity; }
+    .layer img { width:100%; height:100%; object-fit:cover; filter:grayscale(1) contrast(1.08) brightness(.8); user-select:none; -webkit-user-drag:none; }
+    .far { transform:translate3d(calc(var(--pan) * -12px), calc(var(--scroll) * -4px), -80px) scale(1.1); opacity:.9; }
+    .mid { clip-path:polygon(0 45%, 100% 35%, 100% 100%, 0 100%); transform:translate3d(calc(var(--pan) * 18px), calc(var(--scroll) * 3px), 28px) scale(1.045); mix-blend-mode:screen; opacity:.22; }
+    .near { clip-path:polygon(0 66%, 100% 60%, 100% 100%, 0 100%); transform:translate3d(calc(var(--pan) * 28px), calc(var(--scroll) * 7px), 64px) scale(1.07); filter:blur(.2px); opacity:.2; }
+    .vignette { position:absolute; inset:0; box-shadow:inset 0 0 180px rgba(0,0,0,.86); pointer-events:none; }
+    .scan { position:absolute; inset:0; opacity:.12; background:repeating-linear-gradient(0deg, transparent 0 5px, rgba(255,255,255,.14) 6px, transparent 7px); mix-blend-mode:screen; animation:scanShift 7s linear infinite; pointer-events:none; }
+    .rain { position:absolute; inset:-12%; opacity:.19; background-image:repeating-linear-gradient(112deg, transparent 0 23px, rgba(255,255,255,.38) 24px 25px, transparent 26px 52px); transform:translate3d(calc(var(--pan) * -8px),0,90px); animation:rainFall 1.4s linear infinite; pointer-events:none; }
+    .glint { position:absolute; width:52%; height:9%; left:18%; top:58%; transform:translate3d(-130%,0,100px) rotate(-7deg); background:linear-gradient(90deg,transparent,rgba(255,255,255,.38),transparent); filter:blur(8px); mix-blend-mode:screen; opacity:0; animation:glint 7s ease-in-out infinite; pointer-events:none; }
+    .hud { position:absolute; inset:0; padding:18px; display:flex; flex-direction:column; justify-content:space-between; transform:translateZ(120px); pointer-events:none; }
+    .hud-top, .hud-bottom { display:flex; justify-content:space-between; gap:12px; color:#b6b6b1; font:700 9px/1.3 ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing:.18em; text-transform:uppercase; }
+    .hud-bottom { align-items:flex-end; }
+    .crosshair { position:absolute; left:63%; top:53%; width:64px; height:64px; transform:translate(-50%,-50%) translateZ(145px); border:1px solid rgba(255,255,255,.48); opacity:.68; pointer-events:none; }
+    .crosshair:before,.crosshair:after { content:""; position:absolute; background:rgba(255,255,255,.58); }
+    .crosshair:before { left:50%; top:-14px; width:1px; height:92px; }
+    .crosshair:after { top:50%; left:-14px; height:1px; width:92px; }
+    .hotspot { position:absolute; left:63%; top:53%; width:90px; height:90px; transform:translate(-50%,-50%) translateZ(160px); border:0; background:transparent; cursor:pointer; pointer-events:auto; }
+    .hotspot span { position:absolute; left:50%; top:50%; width:12px; height:12px; border-radius:50%; transform:translate(-50%,-50%); background:#fff; box-shadow:0 0 0 9px rgba(255,255,255,.08),0 0 34px rgba(255,255,255,.7); animation:pulse 2.4s ease-in-out infinite; }
+    .caption { display:grid; grid-template-columns:.7fr 1.3fr; gap:20px; margin-top:14px; align-items:start; }
+    .eyebrow { color:var(--accent); font:700 10px/1.2 ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing:.24em; text-transform:uppercase; }
+    h1 { margin:8px 0 0; font:500 clamp(36px,6vw,86px)/.9 Georgia, 'Times New Roman', serif; letter-spacing:-.04em; }
+    .copy { color:#a3a39d; font-size:14px; line-height:1.6; max-width:620px; }
+    .drawer { position:fixed; right:16px; bottom:16px; width:min(420px,calc(100vw - 32px)); border:1px solid var(--line); background:rgba(5,5,5,.94); backdrop-filter:blur(16px); padding:18px; transform:translateY(140%); transition:transform .28s ease; z-index:20; }
+    .drawer.open { transform:translateY(0); }
+    .drawer strong { display:block; font:500 28px/1 Georgia,serif; }
+    .drawer p { color:#9b9b95; line-height:1.55; font-size:13px; }
+    .close { margin-top:10px; border:1px solid rgba(255,255,255,.22); color:#eee; background:#111; padding:10px 14px; cursor:pointer; }
+    .note { margin-top:10px; color:#666; font:600 9px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace; letter-spacing:.12em; text-transform:uppercase; }
+    @keyframes rainFall { to { background-position:0 95px; } }
+    @keyframes scanShift { to { background-position:0 56px; } }
+    @keyframes pulse { 50% { transform:translate(-50%,-50%) scale(.72); opacity:.45; } }
+    @keyframes glint { 0%,45%,100% { transform:translate3d(-140%,0,100px) rotate(-7deg); opacity:0; } 55% { opacity:.72; } 72% { transform:translate3d(170%,0,100px) rotate(-7deg); opacity:0; } }
+    @media (max-width:700px) {
+      .sticky { padding:10px; }
+      .card { min-height:0; aspect-ratio:9/16; }
+      .layer img { width:165%; max-width:none; transform:translateX(calc(-22% + var(--pan) * -4%)); object-position:center; }
+      .caption { grid-template-columns:1fr; padding:0 4px; }
+      .hud { padding:12px; }
+      .hud-top { font-size:7px; }
+      .hud-bottom { font-size:7px; }
+      .crosshair,.hotspot { left:58%; top:56%; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .card,.layer,.rain,.scan,.glint,.hotspot span { animation:none !important; transition:none !important; transform:none !important; }
+      .mid,.near { opacity:0; }
+      .rain { opacity:.08; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="sticky" aria-label="Living Cadillac evidence card">
+      <div class="card-shell">
+        <article class="card" id="card">
+          <div class="layer far"><img alt="Approved Pauli Cadillac reference" src="../../assets/pauli/reference/pauli_reference_cadillac_v001.jpg" /></div>
+          <div class="layer mid"><img alt="" aria-hidden="true" src="../../assets/pauli/reference/pauli_reference_cadillac_v001.jpg" /></div>
+          <div class="layer near"><img alt="" aria-hidden="true" src="../../assets/pauli/reference/pauli_reference_cadillac_v001.jpg" /></div>
+          <div class="rain"></div>
+          <div class="glint"></div>
+          <div class="scan"></div>
+          <div class="vignette"></div>
+          <div class="crosshair"></div>
+          <button class="hotspot" id="hotspot" aria-label="Inspect vehicle evidence"><span></span></button>
+          <div class="hud" aria-hidden="true">
+            <div class="hud-top"><span>WP // EVIDENCE 09</span><span>VEHICLE MATCH</span></div>
+            <div class="hud-bottom"><span>SEATTLE // RAIN // 23:41</span><span>CONFIDENCE: POSITIVE LEAD</span></div>
+          </div>
+        </article>
+        <div class="caption">
+          <div>
+            <div class="eyebrow">Living Story Card / Prototype 01</div>
+            <h1>Everybody knew the car.</h1>
+          </div>
+          <div class="copy">
+            One approved still. No generated video. Depth comes from layered copies, scroll/pointer movement, rain, a restrained chrome glint, and an inspectable evidence hotspot. The image remains the authority; the HTML only changes how the player experiences it.
+            <div class="note">Scroll slowly · move pointer · tap the evidence marker · reduced-motion safe</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <aside class="drawer" id="drawer" aria-live="polite">
+    <div class="eyebrow">Evidence unlocked</div>
+    <strong>White coupe. Same silhouette.</strong>
+    <p>You did not change the story. You changed what you know. The vehicle match moves the investigation from a cold trail to a positive lead.</p>
+    <button class="close" id="close">Return to surveillance</button>
+  </aside>
+
+  <script>
+    const root = document.documentElement;
+    const card = document.getElementById('card');
+    const drawer = document.getElementById('drawer');
+    const hotspot = document.getElementById('hotspot');
+    const close = document.getElementById('close');
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let frame = 0;
+
+    function updateScroll() {
+      if (reduced) return;
+      const max = document.documentElement.scrollHeight - innerHeight;
+      const p = max > 0 ? Math.min(1, Math.max(0, scrollY / max)) : 0;
+      root.style.setProperty('--scroll', p.toFixed(4));
+      root.style.setProperty('--pan', ((p - .5) * 2).toFixed(4));
+    }
+    addEventListener('scroll', () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(updateScroll);
+    }, { passive:true });
+    updateScroll();
+
+    if (!reduced && matchMedia('(pointer:fine)').matches) {
+      card.addEventListener('pointermove', (event) => {
+        const r = card.getBoundingClientRect();
+        const x = ((event.clientX - r.left) / r.width - .5) * 2;
+        const y = ((event.clientY - r.top) / r.height - .5) * 2;
+        root.style.setProperty('--ry', `${(x * 2.2).toFixed(2)}deg`);
+        root.style.setProperty('--rx', `${(-y * 1.6).toFixed(2)}deg`);
+      });
+      card.addEventListener('pointerleave', () => {
+        root.style.setProperty('--ry', '0deg');
+        root.style.setProperty('--rx', '0deg');
+      });
+    }
+
+    hotspot.addEventListener('click', () => drawer.classList.add('open'));
+    close.addEventListener('click', () => drawer.classList.remove('open'));
+  </script>
+</body>
+</html>
