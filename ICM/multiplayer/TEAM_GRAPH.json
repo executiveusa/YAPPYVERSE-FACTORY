@@ -1,0 +1,104 @@
+{
+  "version": 1,
+  "mode": "multiplayer-business-os",
+  "privacy_model": {
+    "background_orchestrators": ["Jeremy", "Bambú"],
+    "public_positioning": "white-label/back-office orchestration where appropriate",
+    "constraints": [
+      "No impersonation",
+      "No false claims about ownership, credentials, regulated roles, or delivery",
+      "Disclose relationships whenever legally or contractually required"
+    ]
+  },
+  "people": [
+    {
+      "name": "Jeremy",
+      "role": "background orchestrator",
+      "lanes": ["portfolio strategy", "capital allocation", "system design", "final human approvals", "Where's Pauli"],
+      "technical_profile": "operator"
+    },
+    {
+      "name": "Bambú",
+      "slug": "bambu",
+      "aliases": ["Bambu", "Bamboo"],
+      "role": "AI orchestrator",
+      "lanes": ["shared context", "agent routing", "diagnostics", "proof design", "receipts"],
+      "technical_profile": "AI"
+    },
+    {
+      "name": "Akash",
+      "role": "India market and systems operator",
+      "lanes": ["My Web Lane", "Akash Engine", "India market", "delivery leverage"],
+      "regions": ["India"]
+    },
+    {
+      "name": "Stacy",
+      "role": "Max Digital Media operator",
+      "lanes": ["sales", "client relationships", "nontechnical workflow validation"],
+      "technical_profile": "nontechnical",
+      "company": "Max Digital Media",
+      "website": "https://maxdigitalmedia.com"
+    },
+    {
+      "name": "Stavarai",
+      "role": "Posta Tees operator",
+      "lanes": ["merch", "print on demand", "apparel systems", "creative commerce"],
+      "company": "Posta Tees",
+      "website": "https://postatees.com"
+    },
+    {
+      "name": "Tyshawn",
+      "role": "AfroMation creative operator",
+      "lanes": ["art", "anime", "graffiti cleanup", "social-purpose creative work", "Seattle opportunities"],
+      "company": "AfroMation",
+      "regions": ["Seattle", "Japan-opportunity exploration"]
+    },
+    {
+      "name": "Yvette",
+      "role": "Mexico / Latin America opportunity operator",
+      "lanes": ["local opportunity discovery", "Mexico market", "Latin America deployment", "client relationships"],
+      "company": "Kupuri Media",
+      "website_status": "UNKNOWN",
+      "regions": ["Puerto Vallarta", "Mexico City", "Monterrey", "Latin America"]
+    }
+  ],
+  "companies": [
+    {
+      "name": "The Pauli Effect",
+      "role": "background strategy / orchestration layer"
+    },
+    {
+      "name": "Max Digital Media",
+      "operator": "Stacy",
+      "purpose": "commercial client-facing lane and nontechnical workflow proving ground"
+    },
+    {
+      "name": "Posta Tees",
+      "operator": "Stavarai",
+      "purpose": "merch and print-on-demand systems lab"
+    },
+    {
+      "name": "AfroMation",
+      "operator": "Tyshawn",
+      "purpose": "creative and social-purpose operating lane"
+    },
+    {
+      "name": "Kupuri Media",
+      "operator": "Yvette",
+      "purpose": "Mexico and Latin America opportunity lane"
+    },
+    {
+      "name": "My Web Lane / Akash Engine",
+      "operator": "Akash",
+      "purpose": "India market and delivery leverage lane"
+    }
+  ],
+  "agent_rules": {
+    "shared_truth_required": true,
+    "explicit_authority_required": true,
+    "human_relationship_owner_required": true,
+    "independent_verifier_required": true,
+    "financial_actions_require_human_approval": true,
+    "cross_company_data_isolation_required": true
+  }
+}
